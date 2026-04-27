@@ -31,6 +31,11 @@ builder.Services.AddPhotographyInfrastructure(builder.Configuration);
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(JwtOptions.SectionName));
 builder.Services.AddSingleton<ITokenService, JwtTokenService>();
 
+// Contact-form options (notification recipient). Bound here so the Application
+// layer remains free of a direct IConfiguration dependency.
+builder.Services.Configure<Photography.Application.Contact.Commands.ContactOptions>(
+    builder.Configuration.GetSection(Photography.Application.Contact.Commands.ContactOptions.SectionName));
+
 // --- API + OpenAPI ---------------------------------------------------------
 builder.Services
     .AddControllers()

@@ -1,5 +1,7 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Photography.Application.Common.Email;
 using Photography.Application.Contact.Dtos;
 using Photography.SharedKernel;
 
@@ -8,32 +10,80 @@ namespace Photography.Application.Contact.Commands;
 public sealed record SendContactMessageCommand(ContactMessageDto Dto) : IRequest<Result>;
 
 /// <summary>
-/// Handles a public contact form submission. The legacy site had a no-op MVC
-/// controller; this implementation validates the payload and structured-logs it.
-/// A future enhancement is to inject an <c>IEmailSender</c> here without changing
-/// the public contract.
+/// Options controlling where contact-form notifications are delivered.
+/// Bound from the <c>Contact</c> configuration section.
 /// </summary>
-public sealed class SendContactMessageHandler(ILogger<SendContactMessageHandler> logger)
+public sealed class ContactOptions
+{
+    public const string SectionName = "Contact";
+
+    /// <summary>
+    /// Recipient for contact-form notifications. When unset, the handler falls back to
+    /// <c>Email:AdminRecipient</c> (read directly from configuration by the host) and,
+    /// failing that, structured-logs the submission only.
+    /// </summary>
+    public string? NotificationRecipient { get; set; }
+}
+
+/// <summary>
+/// Handles a public contact form submission. Validates the payload, structured-logs it,
+/// and (when a recipient is configured) dispatches a notification email via
+/// <see cref="IEmailSender"/>. Email failures are logged but do NOT fail the request —
+/// the user has done nothing wrong if our SMTP relay is down, and we do not want to
+/// expose infrastructure errors to anonymous visitors.
+/// </summary>
+public sealed class SendContactMessageHandler(
+    ILogger<SendContactMessageHandler> logger,
+    IEmailSender emailSender,
+    IOptions<ContactOptions> contactOptions)
     : IRequestHandler<SendContactMessageCommand, Result>
 {
     private const int MaxNameLength = 128;
     private const int MaxEmailLength = 256;
     private const int MaxMessageLength = 4000;
 
-    public Task<Result> Handle(SendContactMessageCommand request, CancellationToken ct)
+    private readonly ContactOptions _contact = contactOptions.Value;
+
+    public async Task<Result> Handle(SendContactMessageCommand request, CancellationToken ct)
     {
         var dto = request.Dto;
         if (string.IsNullOrWhiteSpace(dto.Name) || dto.Name.Length > MaxNameLength)
-            return Task.FromResult(Result.Fail("Invalid name"));
+            return Result.Fail("Invalid name");
         if (string.IsNullOrWhiteSpace(dto.Email) || dto.Email.Length > MaxEmailLength || !dto.Email.Contains('@'))
-            return Task.FromResult(Result.Fail("Invalid email"));
+            return Result.Fail("Invalid email");
         if (string.IsNullOrWhiteSpace(dto.Message) || dto.Message.Length > MaxMessageLength)
-            return Task.FromResult(Result.Fail("Invalid message"));
+            return Result.Fail("Invalid message");
+
+        var name = dto.Name.Trim();
+        var email = dto.Email.Trim();
+        var message = dto.Message.Trim();
 
         logger.LogInformation(
             "Contact message received from {ContactName} <{ContactEmail}>: {ContactMessage}",
-            dto.Name.Trim(), dto.Email.Trim(), dto.Message.Trim());
+            name, email, message);
 
-        return Task.FromResult(Result.Ok());
+        var recipient = _contact.NotificationRecipient;
+        if (!string.IsNullOrWhiteSpace(recipient))
+        {
+            var subject = $"Contact form: {name}";
+            var body =
+                $"From: {name} <{email}>{Environment.NewLine}" +
+                $"{Environment.NewLine}" +
+                message;
+
+            try
+            {
+                await emailSender.SendAsync(
+                    new EmailMessage(To: recipient, Subject: subject, Body: body, ReplyTo: email),
+                    ct);
+            }
+            catch (Exception ex)
+            {
+                // Don't fail the public endpoint — the message is in the log already.
+                logger.LogError(ex, "Failed to deliver contact-form notification to {Recipient}", recipient);
+            }
+        }
+
+        return Result.Ok();
     }
 }

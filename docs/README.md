@@ -68,3 +68,4 @@ See [`docs/operations/migration-runbook.md`](docs/operations/migration-runbook.m
 - [`docs/rfcs/todo/0001-migrate-to-dotnet-core.md`](docs/rfcs/todo/0001-migrate-to-dotnet-core.md) — migration RFC
 - [`docs/operations/migration-runbook.md`](docs/operations/migration-runbook.md) — DB + image migration runbook
 - [`docs/operations/r2-credentials.md`](docs/operations/r2-credentials.md) — R2 credential setup
+- [`docs/operations/email.md`](docs/operations/email.md) — `IEmailSender` configuration (NoOp / SMTP)

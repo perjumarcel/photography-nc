@@ -1,11 +1,13 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Photography.Application.Common.Email;
 using Photography.Application.Common.Imaging;
 using Photography.Application.Storage;
 using Photography.Core.Albums;
 using Photography.Core.Categories;
 using Photography.Core.Users;
+using Photography.Infrastructure.Email;
 using Photography.Infrastructure.Imaging;
 using Photography.Infrastructure.Persistence;
 using Photography.Infrastructure.Persistence.Repositories;
@@ -33,14 +35,25 @@ public static class DependencyInjection
 
         services.AddSingleton<IImageMetadataReader, ImageSharpMetadataReader>();
 
-        var provider = configuration["Storage:Provider"] ?? "Local";
+        var storageProvider = configuration["Storage:Provider"] ?? "Local";
         services.Configure<LocalStorageOptions>(configuration.GetSection(LocalStorageOptions.SectionName));
         services.Configure<R2StorageOptions>(configuration.GetSection(R2StorageOptions.SectionName));
 
-        if (string.Equals(provider, "R2", StringComparison.OrdinalIgnoreCase))
+        if (string.Equals(storageProvider, "R2", StringComparison.OrdinalIgnoreCase))
             services.AddSingleton<IStorageService, R2StorageService>();
         else
             services.AddSingleton<IStorageService, LocalFileSystemStorageService>();
+
+        // ── Email ──────────────────────────────────────────────────────────
+        // Same provider-switch pattern as Storage. SMTP defaults to no-op so
+        // that local/CI environments work without credentials.
+        services.Configure<EmailOptions>(configuration.GetSection(EmailOptions.SectionName));
+        services.Configure<SmtpOptions>(configuration.GetSection(SmtpOptions.SectionName));
+        var emailProvider = configuration[$"{EmailOptions.SectionName}:Provider"] ?? "NoOp";
+        if (string.Equals(emailProvider, "Smtp", StringComparison.OrdinalIgnoreCase))
+            services.AddTransient<IEmailSender, SmtpEmailSender>();
+        else
+            services.AddSingleton<IEmailSender, NoOpEmailSender>();
 
         return services;
     }
