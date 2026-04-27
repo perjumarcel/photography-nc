@@ -18,6 +18,7 @@ public class AppDbContext : DbContext
     public DbSet<Image> Images => Set<Image>();
     public DbSet<Category> Categories => Set<Category>();
     public DbSet<Tag> Tags => Set<Tag>();
+    public DbSet<Photography.Core.Users.User> Users => Set<Photography.Core.Users.User>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

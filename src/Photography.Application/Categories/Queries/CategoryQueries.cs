@@ -17,6 +17,6 @@ public sealed class ListCategoriesHandler : IRequestHandler<ListCategoriesQuery,
     {
         var categories = await _repo.ListAsync(ct);
         return Result<IReadOnlyList<CategoryDto>>.Ok(
-            categories.Select(c => new CategoryDto(c.Id, c.Name, c.Slug, c.DisplayOrder)).ToList());
+            categories.Select(c => new CategoryDto(c.Id, c.Name, c.Slug, c.DisplayOrder, c.ShowAsFilter)).ToList());
     }
 }

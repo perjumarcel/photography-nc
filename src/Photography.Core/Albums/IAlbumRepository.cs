@@ -8,6 +8,9 @@ public interface IAlbumQueryRepository
     Task<IReadOnlyList<Album>> ListAsync(bool publicOnly, CancellationToken ct = default);
     Task<Album?> GetByIdAsync(Guid id, CancellationToken ct = default);
     Task<int> CountAsync(CancellationToken ct = default);
+
+    /// <summary>Returns <c>true</c> when at least one album currently belongs to the supplied category.</summary>
+    Task<bool> AnyInCategoryAsync(int categoryId, CancellationToken ct = default);
 }
 
 /// <summary>

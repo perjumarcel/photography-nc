@@ -1,9 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Photography.Application.Common.Imaging;
 using Photography.Application.Storage;
 using Photography.Core.Albums;
 using Photography.Core.Categories;
+using Photography.Core.Users;
+using Photography.Infrastructure.Imaging;
 using Photography.Infrastructure.Persistence;
 using Photography.Infrastructure.Persistence.Repositories;
 using Photography.Infrastructure.Storage;
@@ -26,6 +29,9 @@ public static class DependencyInjection
         services.AddScoped<IAlbumQueryRepository, AlbumQueryRepository>();
         services.AddScoped<IAlbumCommandRepository, AlbumCommandRepository>();
         services.AddScoped<ICategoryRepository, CategoryRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
+
+        services.AddSingleton<IImageMetadataReader, ImageSharpMetadataReader>();
 
         var provider = configuration["Storage:Provider"] ?? "Local";
         services.Configure<LocalStorageOptions>(configuration.GetSection(LocalStorageOptions.SectionName));

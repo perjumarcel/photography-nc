@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using Photography.Application.Auth;
 using Photography.Application.Common.Behaviors;
 using Photography.Application.Common.Time;
 
@@ -16,6 +17,7 @@ public static class DependencyInjection
         });
 
         services.AddSingleton<IClock, SystemClock>();
+        services.AddSingleton<IPasswordHasher, PasswordHasher>();
         return services;
     }
 }

@@ -23,6 +23,9 @@ public sealed class AlbumQueryRepository : IAlbumQueryRepository
         _db.Albums.AsNoTracking().Include(a => a.Images).FirstOrDefaultAsync(a => a.Id == id, ct);
 
     public Task<int> CountAsync(CancellationToken ct = default) => _db.Albums.CountAsync(ct);
+
+    public Task<bool> AnyInCategoryAsync(int categoryId, CancellationToken ct = default) =>
+        _db.Albums.AsNoTracking().AnyAsync(a => a.CategoryId == categoryId, ct);
 }
 
 public sealed class AlbumCommandRepository : IAlbumCommandRepository

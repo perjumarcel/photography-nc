@@ -10,30 +10,32 @@ public class Category : EntityBase<int>
     public string? Slug { get; private set; }
     public int DisplayOrder { get; private set; }
 
+    /// <summary>
+    /// When <c>true</c> the category is offered as a filter chip on the public
+    /// portfolio / stories pages. Mirrors the legacy <c>Category.ShowAsFilter</c>
+    /// flag that powered the same UX.
+    /// </summary>
+    public bool ShowAsFilter { get; private set; } = true;
+
     private Category() { }
 
-    public static Category Create(string name, string? slug = null, int displayOrder = 0)
+    public static Category Create(string name, string? slug = null, int displayOrder = 0, bool showAsFilter = true)
     {
-        if (string.IsNullOrWhiteSpace(name))
-            throw new ArgumentException("Category name is required", nameof(name));
-        if (name.Length > MaxNameLength)
-            throw new ArgumentException($"Category name exceeds {MaxNameLength} characters", nameof(name));
+        ValidateName(name);
 
         return new Category
         {
             Name = name.Trim(),
-            Slug = string.IsNullOrWhiteSpace(slug) ? null : slug.Trim().ToLowerInvariant(),
+            Slug = NormalizeSlug(slug),
             DisplayOrder = displayOrder,
+            ShowAsFilter = showAsFilter,
             CreatedAtUtc = DateTime.UtcNow,
         };
     }
 
     public void Rename(string name)
     {
-        if (string.IsNullOrWhiteSpace(name))
-            throw new ArgumentException("Category name is required", nameof(name));
-        if (name.Length > MaxNameLength)
-            throw new ArgumentException($"Category name exceeds {MaxNameLength} characters", nameof(name));
+        ValidateName(name);
         Name = name.Trim();
         Touch();
     }
@@ -46,7 +48,23 @@ public class Category : EntityBase<int>
 
     public void SetSlug(string? slug)
     {
-        Slug = string.IsNullOrWhiteSpace(slug) ? null : slug.Trim().ToLowerInvariant();
+        Slug = NormalizeSlug(slug);
         Touch();
     }
+
+    public void SetShowAsFilter(bool value)
+    {
+        ShowAsFilter = value;
+        Touch();
+    }
+
+    private static void ValidateName(string name)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
+        if (name.Length > MaxNameLength)
+            throw new ArgumentException($"Category name exceeds {MaxNameLength} characters", nameof(name));
+    }
+
+    private static string? NormalizeSlug(string? slug)
+        => string.IsNullOrWhiteSpace(slug) ? null : slug.Trim().ToLowerInvariant();
 }

@@ -56,17 +56,18 @@ public sealed class AdminAlbumsController : ControllerBase
     {
         if (file is null || file.Length == 0) return BadRequest(new { error = "File is required" });
 
-        // We do not decode the image here to keep the API thin; width/height are 0 until a background
-        // worker reads dimensions. A future enhancement can decode at the edge using ImageSharp.
-        await using var stream = file.OpenReadStream();
+        // The handler decodes width/height with ImageSharp; we just hand it a seekable
+        // stream by buffering the form file into memory (capped by RequestSizeLimit).
+        await using var seekable = new MemoryStream();
+        await file.CopyToAsync(seekable, ct);
+        seekable.Position = 0;
+
         var result = await _mediator.Send(new AddImageCommand(
             AlbumId: id,
             OriginalName: file.FileName,
             ContentType: file.ContentType,
             SizeBytes: file.Length,
-            Width: 0,
-            Height: 0,
-            Content: stream,
+            Content: seekable,
             Checksum: null), ct);
         return result.ToActionResult(this, imgId => Created($"/api/admin/albums/{id}/images/{imgId}", new { id = imgId }));
     }

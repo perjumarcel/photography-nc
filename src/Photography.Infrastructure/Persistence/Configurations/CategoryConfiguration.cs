@@ -14,6 +14,7 @@ public sealed class CategoryConfiguration : IEntityTypeConfiguration<Category>
         b.Property(x => x.Name).HasMaxLength(Category.MaxNameLength).IsRequired();
         b.Property(x => x.Slug).HasMaxLength(Category.MaxNameLength);
         b.Property(x => x.DisplayOrder).IsRequired();
+        b.Property(x => x.ShowAsFilter).IsRequired().HasDefaultValue(true);
         b.Property(x => x.CreatedAtUtc).IsRequired();
         b.Property(x => x.UpdatedAtUtc);
 

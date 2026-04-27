@@ -35,4 +35,11 @@ public sealed class AdminCategoriesController : ControllerBase
         var result = await _mediator.Send(new UpdateCategoryCommand(id, dto), ct);
         return result.ToActionResult(this);
     }
+
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Delete(int id, CancellationToken ct)
+    {
+        var result = await _mediator.Send(new DeleteCategoryCommand(id), ct);
+        return result.ToActionResult(this);
+    }
 }
