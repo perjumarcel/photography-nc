@@ -8,11 +8,19 @@ import { StoriesPage } from '@/pages/StoriesPage';
 import { AboutPage } from '@/pages/AboutPage';
 import { ContactPage } from '@/pages/ContactPage';
 import { NotFoundPage } from '@/pages/NotFoundPage';
+import { LoginPage } from '@/features/auth/ui/LoginPage';
+import { RequireAuth } from '@/features/auth/ui/RequireAuth';
+import { AdminLayout } from '@/pages/admin/AdminLayout';
+import { AdminDashboardPage } from '@/pages/admin/AdminDashboardPage';
+import { AdminAlbumsPage } from '@/pages/admin/AdminAlbumsPage';
+import { AdminAlbumEditPage } from '@/pages/admin/AdminAlbumEditPage';
+import { AdminCategoriesPage } from '@/pages/admin/AdminCategoriesPage';
 
 export function App(): React.JSX.Element {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Public site */}
         <Route element={<Layout />}>
           <Route index element={<HomePage />} />
           <Route path="portfolio" element={<PortfolioPage />} />
@@ -21,6 +29,24 @@ export function App(): React.JSX.Element {
           <Route path="about" element={<AboutPage />} />
           <Route path="contact" element={<ContactPage />} />
           <Route path="*" element={<NotFoundPage />} />
+        </Route>
+
+        {/* Auth */}
+        <Route path="/admin/login" element={<LoginPage />} />
+
+        {/* Admin (protected by RequireAuth + backend [Authorize(AdminOnly)]) */}
+        <Route
+          path="/admin"
+          element={(
+            <RequireAuth>
+              <AdminLayout />
+            </RequireAuth>
+          )}
+        >
+          <Route index element={<AdminDashboardPage />} />
+          <Route path="albums" element={<AdminAlbumsPage />} />
+          <Route path="albums/:id" element={<AdminAlbumEditPage />} />
+          <Route path="categories" element={<AdminCategoriesPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

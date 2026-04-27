@@ -1,29 +1,14 @@
 import * as React from 'react';
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button } from '@/shared/ui/Button';
+import { ContactFormContainer } from '@/features/contact/ui/ContactFormContainer';
 
 /**
  * Contact page. Mirrors `Contact/Index.cshtml` — info column on the left,
- * contact form on the right. Stacks on mobile.
- *
- * The form does not currently POST anywhere — the submit handler simulates
- * success and is the integration point for a future `/api/public/contact`.
+ * contact form on the right. Stacks on mobile. The form posts to
+ * `/api/public/contact` via the {@link ContactFormContainer}.
  */
 export function ContactPage(): React.JSX.Element {
   const { t } = useTranslation();
-  const [submitted, setSubmitted] = useState(false);
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [message, setMessage] = useState('');
-
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
-    e.preventDefault();
-    setSubmitted(true);
-    setName('');
-    setEmail('');
-    setMessage('');
-  };
 
   return (
     <section className="bg-ink-soft text-paper">
@@ -65,67 +50,7 @@ export function ContactPage(): React.JSX.Element {
             </ul>
           </div>
 
-          {/* Form */}
-          <form onSubmit={onSubmit} className="space-y-4 md:col-span-2" noValidate>
-            <div>
-              <label htmlFor="contact-name" className="block text-[0.7rem] uppercase tracking-[0.25em] text-paper/70">
-                {t('contact.formName')}
-              </label>
-              <input
-                id="contact-name"
-                name="name"
-                type="text"
-                required
-                autoComplete="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="mt-2 w-full border-b border-paper/30 bg-transparent py-3 text-paper placeholder-paper/40 focus:border-brand focus:outline-none"
-              />
-            </div>
-            <div>
-              <label htmlFor="contact-email" className="block text-[0.7rem] uppercase tracking-[0.25em] text-paper/70">
-                {t('contact.formEmail')}
-              </label>
-              <input
-                id="contact-email"
-                name="email"
-                type="email"
-                required
-                autoComplete="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="mt-2 w-full border-b border-paper/30 bg-transparent py-3 text-paper placeholder-paper/40 focus:border-brand focus:outline-none"
-              />
-            </div>
-            <div>
-              <label htmlFor="contact-message" className="block text-[0.7rem] uppercase tracking-[0.25em] text-paper/70">
-                {t('contact.formMessage')}
-              </label>
-              <textarea
-                id="contact-message"
-                name="message"
-                required
-                rows={5}
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                className="mt-2 w-full resize-y border-b border-paper/30 bg-transparent py-3 text-paper placeholder-paper/40 focus:border-brand focus:outline-none"
-              />
-            </div>
-
-            {submitted && (
-              <p role="status" className="text-sm text-brand">
-                {t('contact.formSuccess')}
-              </p>
-            )}
-
-            <Button
-              type="submit"
-              variant="outline"
-              className="border-paper text-paper hover:bg-paper hover:text-ink"
-            >
-              {t('contact.formSubmit')}
-            </Button>
-          </form>
+          <ContactFormContainer />
         </div>
       </div>
     </section>

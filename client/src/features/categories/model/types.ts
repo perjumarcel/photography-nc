@@ -1,6 +1,7 @@
 export interface CategoryDto {
   id: number;
   name: string;
-  slug: string;
+  slug: string | null;
   displayOrder: number;
+  showAsFilter: boolean;
 }
