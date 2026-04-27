@@ -1,0 +1,91 @@
+﻿@using Photography.Entities
+@using Photography.Web
+@model Photography.Web.Admin.Models.Images.ImageListViewModel
+@{
+    ViewBag.CurrentPageName = PageNames.Admin.Images; // The menu item will be active for this page.
+}
+@section styles {
+    <link href="~/lib/gridzy/gridzy-2.0.min.css" rel="stylesheet" asp-append-version="true" />
+}
+@section scripts
+{
+    <script src="~/areas/admin/Views/Images/Index.js" asp-append-version="true"></script>
+    <script src="~/lib/gridzy/gridzy-2.0.min.js" asp-append-version="true"></script>
+}
+
+<div class="row clearfix">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="card">
+            <div class="body">
+                <div class="row clearfix">
+                    <div class="col-md-6" style="margin-bottom: 0;">
+                        <div class="input-group" style="margin-bottom: 10px;">
+                            <span class="input-group-addon">
+                                <i class="material-icons">perm_media</i>
+                            </span>
+                            <div class="form-line">
+                                <select class="form-control selectpicker show-tick" id="AlbumId" data-live-search="true">
+                                    @foreach (var album in Model.Albums)
+                                    {
+                                        @Html.Raw("<option data-subtext='" + album.Category + "' value='" +
+                                                  album.Id + "' " + (album.Id == Model.AlbumId ? "selected" : "") + ">" + album.Title + "</option>")
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3" style="margin-bottom: 0;">
+                        <button type="button" style="" class="btn btn-info waves-effect"
+                                @(Html.Raw(Model.Albums.Any() ? "" : "disabled = \"disabled\""))
+                                id="upload-images" data-toggle="modal" data-target="#UploadImageModal">
+
+                            <i class="material-icons">add_to_photos</i>
+                            <span>@L("AddImages")</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row clearfix">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="card">
+            <div class="body">
+                <div id="images" class="gridzy" data-gridzy-spaceBetween="15" >
+                    @foreach (var image in Model.Images)
+                    {
+                        <div id="@image.Id" class='box-item-base @Html.Raw(image.ImageOrientation == ImageOrientation.Horizontal ? "set-album-cover" : "" )
+                             @Html.Raw(image.ImageType == ImageType.Cover ? "album-cover" : "" )'>
+                            <div class="box-item">
+                                <div class="width-100-p">
+                                    @*<span class="overlay-box"></span>*@
+                                    @*<img class="thumbnail respimg box-item-image gridzyImage" data-gridzylazysrc='@Url.Content("http://covercenco.com/"+ image.RelativeUrl.Replace("~/", "")  + "?width=500")' alt="@image.OriginalName">*@
+                                    <img class="thumbnail respimg box-item-image gridzyImage" data-gridzylazysrc='@Url.Content(image.RelativeUrl  + "?width=500")' alt="@image.OriginalName">
+                                </div>
+                            </div>
+                            <a href="#" class="delete-image delete-image-icon col-red m-b--25 right" data-image-title="@image.OriginalName" data-image-id="@image.Id">
+                                <i class="material-icons">cancel</i>
+                            </a>
+                            <div class="cover-middle">
+                                <span class="btn bg-black btn-block btn-lg waves-effect cover-text">@L("Cover")</span>
+                                <button class="btn btn-info waves-effect cover-set-button"
+                                        data-image-originalname="@image.OriginalName" data-image-id="@image.Id">
+                                    @L("SetAsCover")
+                                </button>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="UploadImageModal" tabindex="-1" role="dialog" aria-labelledby="UploadImageModalLabel" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>

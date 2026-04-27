@@ -1,0 +1,144 @@
+[
+  {
+    "outputFileName": "css/admin/site.min.css",
+    "inputFiles": [
+      "fonts/roboto/roboto.css",
+      "fonts/material-icons/materialicons.css",
+      "lib/bootstrap/dist/css/bootstrap.css",
+      "lib/bootstrap-select/dist/css/bootstrap-select.css",
+      "lib/toastr/toastr.css",
+      "lib/famfamfam-flags/dist/sprite/famfamfam-flags.css",
+      "lib/font-awesome/css/font-awesome.css",
+      "lib/Waves/dist/waves.css",
+      "lib/animate.css/animate.css",
+      "css/admin/materialize.css",
+      "css/admin/style.css",
+      "css/admin/themes/all-themes.css",
+      "Views/Shared/_Layout.css"
+    ]
+  },
+  {
+    "outputFileName": "js/admin/site.min.js",
+    "inputFiles": [
+      "lib/json2/json2.js",
+      "lib/jquery/dist/jquery.js",
+      "lib/bootstrap/dist/js/bootstrap.js",
+      "lib/moment/min/moment-with-locales.js",
+      "lib/jquery-validation/dist/jquery.validate.js",
+      "lib/blockUI/jquery.blockUI.js",
+      "lib/toastr/toastr.js",
+      "lib/sweetalert/dist/sweetalert.min.js",
+      "lib/spin.js/spin.js",
+      "lib/spin.js/jquery.spin.js",
+      "lib/bootstrap-select/dist/js/bootstrap-select.js",
+      "lib/jquery-slimscroll/jquery.slimscroll.js",
+      "lib/Waves/dist/waves.js",
+      "lib/push.js/push.js",
+      "lib/jquery.serializejson/jquery.serializejson.js",
+      "Abp/Framework/scripts/abp.js",
+      "Abp/Framework/scripts/libs/abp.jquery.js",
+      "Abp/Framework/scripts/libs/abp.toastr.js",
+      "Abp/Framework/scripts/libs/abp.blockUI.js",
+      "Abp/Framework/scripts/libs/abp.spin.js",
+      "Abp/Framework/scripts/libs/abp.sweet-alert.js",
+      "js/admin/admin.js",
+      "js/admin/main.js",
+      "Views/Shared/_Layout.js"
+    ]
+  },
+  {
+    "outputFileName": "css/frontend/account.min.css",
+    "inputFiles": [
+      "fonts/roboto/roboto.css",
+      "fonts/material-icons/materialicons.css",
+      "lib/bootstrap/dist/css/bootstrap.css",
+      "lib/toastr/toastr.css",
+      "lib/famfamfam-flags/dist/sprite/famfamfam-flags.css",
+      "lib/font-awesome/css/font-awesome.css",
+      "lib/Waves/dist/waves.css",
+      "lib/animate.css/animate.css",
+      "css/admin/materialize.css",
+      "css/admin/style.css",
+      "Views/Account/_Layout.css"
+    ]
+  },
+  {
+    "outputFileName": "js/frontend/account.min.js",
+    "inputFiles": [
+      "lib/json2/json2.js",
+      "lib/jquery/dist/jquery.js",
+      "lib/bootstrap/dist/js/bootstrap.js",
+      "lib/moment/min/moment-with-locales.js",
+      "lib/jquery-validation/dist/jquery.validate.js",
+      "lib/blockUI/jquery.blockUI.js",
+      "lib/toastr/toastr.js",
+      "lib/sweetalert/dist/sweetalert.min.js",
+      "lib/spin.js/spin.js",
+      "lib/spin.js/jquery.spin.js",
+      "lib/Waves/dist/waves.js",
+      "Abp/Framework/scripts/abp.js",
+      "Abp/Framework/scripts/libs/abp.jquery.js",
+      "Abp/Framework/scripts/libs/abp.toastr.js",
+      "Abp/Framework/scripts/libs/abp.blockUI.js",
+      "Abp/Framework/scripts/libs/abp.spin.js",
+      "Abp/Framework/scripts/libs/abp.sweet-alert.js",
+      "js/admin/admin.js",
+      "js/admin/main.js"
+    ]
+  },
+  {
+    "outputFileName": "css/frontend/site.min.css",
+    "inputFiles": [
+      "lib/font-awesome/css/font-awesome.css",
+      "lib/bootstrap/dist/css/bootstrap.css",
+      "lib/animate.css/animate.css",
+      "lib/swiper/dist/css/swiper.min.css",
+      "lib/owl.carousel/dist/assets/owl.carousel.min.css",
+      "lib/owl.carousel/dist/assets/owl.theme.default.min.css",
+      "lib/magnific-popup/dist/magnific-popup.css",
+      "css/frontend/reset.css",
+      "css/frontend/plugins.css",
+      "css/frontend/style.css",
+      "css/frontend/main.css"
+    ]
+  },
+  {
+    "outputFileName": "js/frontend/site.min.js",
+    "inputFiles": [
+      "lib/json2/json2.js",
+      "lib/jquery/dist/jquery.min.js",
+      "lib/bootstrap/dist/js/bootstrap.min.js",
+      "lib/moment/min/moment-with-locales.min.js",
+      "lib/jquery-validation/dist/jquery.validate.min.js",
+      "lib/blockUI/jquery.blockUI.js",
+      "lib/toastr/toastr.min.js",
+      "lib/sweetalert/dist/sweetalert.min.js",
+      "lib/spin.js/spin.min.js",
+      "lib/spin.js/jquery.spin.js",
+      "lib/bootstrap-select/dist/js/bootstrap-select.min.js",
+      "lib/jquery-slimscroll/jquery.slimscroll.min.js",
+      "lib/Waves/dist/waves.min.js",
+      "lib/push.js/push.min.js",
+      "lib/swiper/dist/js/swiper.min.js",
+      "lib/intense-images/intense.min.js",
+      "lib/magnific-popup/dist/jquery.magnific-popup.min.js",
+      "lib/single-page-nav/jquery.singlePageNav.min.js",
+      "lib/jquery.nicescroll/jquery.nicescroll.min.js",
+      "lib/isotope-layout/dist/isotope.pkgd.min.js",
+      "lib/imagesloaded/imagesloaded.pkgd.min.js",
+      "lib/ScrollToFixed/jquery-scrolltofixed-min.js",
+      "lib/jquery_appear/jquery.appear.js",
+      "lib/jquery-mousewheel/jquery.mousewheel.min.js",
+
+      "lib/abp-web-resources/Abp/Framework/scripts/abp.js",
+      "lib/abp-web-resources/Abp/Framework/scripts/libs/abp.jquery.js",
+      "lib/abp-web-resources/Abp/Framework/scripts/libs/abp.toastr.js",
+      "lib/abp-web-resources/Abp/Framework/scripts/libs/abp.blockUI.js",
+      "lib/abp-web-resources/Abp/Framework/scripts/libs/abp.spin.js",
+      "lib/abp-web-resources/Abp/Framework/scripts/libs/abp.sweet-alert.js",
+      
+      "js/frontend/owl.carousel.custom.js",
+       "js/frontend/scripts.js"
+    ]
+  }
+]

@@ -1,0 +1,42 @@
+﻿@using Photography.Web.Helpers
+@{
+    ViewBag.CurrentPageName = PageNames.Frontend.About; 
+}
+
+@section styles
+{
+    <meta property="og:title" content="Nicolae Covercenco - Despre mine" />
+    <meta property="og:image" content="@Url.Content("~/images/about-me.jpg", true)" />
+
+    <style>
+        .content.full-height {
+            background-color: #292929;
+        }
+
+        .custom-inner {
+            background: transparent;
+        }
+    </style>
+}
+
+
+<div class="full-height-wrap fixed-wrap">
+    <div class="bg" style='background-position: initial;background-image:url(@Url.Content("~/images/about-me.jpg"))'></div>
+    <div class="overlay"></div>
+</div>
+<div class="custom-inner">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-5"> </div>
+            <div class="col-md-6">
+                <h2>@L("AboutMe")</h2>
+                <div class="separator"></div>
+                <div class="clearfix"></div>
+                @*<h3 class="subtitle">Look even slightly believable. If you are going to use a passage.</h3>*@
+                <h3 class="subtitle">@L("AboutMeDescription1")</h3>
+                <p>@L("AboutMeDescription2")</p>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+</div>

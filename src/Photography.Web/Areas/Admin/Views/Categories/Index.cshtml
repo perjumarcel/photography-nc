@@ -1,0 +1,105 @@
+﻿@using Photography.Category.Dto
+@using Photography.Entities
+@using Photography.Web
+@model Abp.Application.Services.Dto.PagedResultDto<CategoryDto>
+@{
+    ViewBag.CurrentPageName = PageNames.Admin.Categories; // The menu item will be active for this page.
+}
+@section scripts
+{
+    <script src="~/areas/admin/Views/Categories/Index.js" asp-append-version="true"></script>
+}
+<div class="row clearfix">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="card">
+            <div class="header">
+                <h2>
+                    @L("Categories")
+                </h2>
+                <ul class="header-dropdown m-r--5">
+                    <li class="dropdown">
+                        <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                            <i class="material-icons">more_vert</i>
+                        </a>
+                        <ul class="dropdown-menu pull-right">
+                            <li><a id="AddButton" href="javascript:void(0);" class="waves-effect waves-block" data-toggle="modal" data-target="#CategoryCreateModal"><i class="material-icons">add</i>@L("Add")</a></li>
+                            <li><a id="RefreshButton" href="javascript:void(0);" class="waves-effect waves-block"><i class="material-icons">refresh</i>@L("Refresh")</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <div class="body table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>@L("Title")</th>
+                            <th>@L("ShowAsFilter")</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var category in Model.Items)
+                        {
+                        <tr>
+                            <td>@category.Title</td>
+                            <td><i class="material-icons" style="color:@(category.ShowAsFilter? "green":"red");">@(category.ShowAsFilter ? "check_box" : "indeterminate_check_box")</i></td>
+                            <td class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                    <i class="material-icons">menu</i>
+                                </a>
+                                <ul class="dropdown-menu pull-right">
+                                    <li><a href="#" class="waves-effect waves-block edit-category" data-category-id="@category.Id" data-toggle="modal" data-target="#CategoryEditModal"><i class="material-icons">edit</i>@L("Edit")</a></li>
+                                    <li><a href="#" class="waves-effect waves-block delete-category" data-category-id="@category.Id" data-category-title="@category.Title"><i class="material-icons">delete_sweep</i>@L("Delete")</a></li>
+                                </ul>
+                            </td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+                <button type="button" class="btn btn-primary btn-circle waves-effect waves-circle waves-float pull-right" data-toggle="modal" data-target="#CategoryCreateModal">
+                    <i class="material-icons">add</i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="CategoryCreateModal" tabindex="-1" role="dialog" aria-labelledby="CategoryCreateModalLabel" data-backdrop="static">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form name="categoryCreateForm" role="form" novalidate class="form-validation">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <span>@L("CreateNewCategory")</span>
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row clearfix">
+                        <div class="form-group form-float">
+                            <div class="form-line">
+                                <input type="text" name="Title" class="form-control" required maxlength="@Category.MaxTitleLength">
+                                <label class="form-label">@L("Title")</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="form-group form-float">
+                            <div class="checkbox">
+                                <input type="checkbox" value="true" name="ShowAsFilter" id="ShowAsFilter" class="filled-in" checked />
+                                <label for="ShowAsFilter">@L("ShowAsFilter")</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default waves-effect" data-dismiss="modal">@L("Cancel")</button>
+                    <button type="submit" class="btn btn-primary waves-effect">@L("Save")</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="CategoryEditModal" tabindex="-1" role="dialog" aria-labelledby="CategoryEditModalLabel" data-backdrop="static">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>

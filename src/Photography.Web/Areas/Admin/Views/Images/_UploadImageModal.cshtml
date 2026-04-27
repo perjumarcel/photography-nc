@@ -1,0 +1,29 @@
+﻿@using Photography.Web.Models.Common.Modals
+@using System.Web.Mvc.Html
+@model Photography.Album.Dto.AlbumDto
+@{
+    Layout = null;
+}
+@Html.Partial("~/Views/Shared/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel(L("UploadImages")))
+
+<div class="modal-body">
+    <form name="UploadImageForm" role="form" novalidate class="form-validation">
+        <input type="hidden" name="Id" value="@Model.Id" />
+        <div class="form-group form-float">
+            <div class="form-line">
+                <input type="text" name="Title" class="form-control" value="@Model.Title" readonly="readonly">
+                <label class="form-label">@L("Title")</label>
+            </div>
+        </div>
+
+        @*@await Component.InvokeAsync(typeof(FineUploaderViewComponent), new {albumId = Model.Id})*@
+        @Html.Action("FineUploader", "Layout", new {albumId = Model.Id})
+    </form>
+</div>
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-default close-button waves-effect" data-dismiss="modal">@L("Cancel")</button>
+    <button type="button" class="btn btn-primary upload-button waves-effect">@L("Upload")</button>
+</div>
+
+<script src="~/areas/admin/Views/Images/_UploadImagesModal.js" asp-append-version="true"></script>

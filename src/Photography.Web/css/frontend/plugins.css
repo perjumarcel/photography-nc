@@ -1,0 +1,297 @@
+﻿/* ===============================================================
+Your custom styles, here you need to specify container's and slide's
+sizes, pagination, etc.
+================================================================*/
+.swiper-container {
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  position:relative;
+  float:left;
+}
+.swiper-slide {
+  position:relative;
+}
+.pagination{
+	position:absolute;
+	z-index:20;
+	left:0;
+	width:100%;
+	bottom:20px;
+}
+.swiper-pagination-switch{ 
+	display:inline-block;
+	width:8px;
+	height:8px;
+	background:#fff;
+	margin-right:5px;
+	cursor:pointer;
+	border-radius:100%;
+	border:2px solid rgba(255,255,255,0.51); 
+	margin-left:7px;
+	-webkit-transition: 0.5s 0.2s;
+	transition: 0.5s 0.2s;
+}
+.swiper-active-switch{background: none;}
+.background-video { 
+  bottom: 0;
+  left: 0;
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+video,
+source {
+  bottom: 0;
+  left: 0;
+  min-height: 100%;
+  min-width: 100%;
+  position: absolute;
+}
+.loaded .ytplayer-container {
+  display: block;
+}
+.ytplayer-container {
+  bottom: 0;
+  height: 100%;
+  left: 0;
+  min-width: 100%;
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 0;
+} 
+.ytplayer-shield {
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  z-index: 2;
+}
+.ytplayer-player {
+  position: absolute;
+}
+
+/* clearfix */
+.owl-loaded .animated {
+    -webkit-animation-duration: 1000ms;
+    animation-duration: 1000ms;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both
+}
+
+.owl-loaded .owl-animated-in {
+    z-index: 0
+}
+
+.owl-loaded .owl-animated-out {
+    z-index: 1
+}
+
+.owl-loaded .fadeOut {
+    -webkit-animation-name: fadeOut;
+    animation-name: fadeOut
+}
+
+@-webkit-keyframes fadeOut {
+    0% {
+        opacity: 1
+    }
+
+    100% {
+        opacity: 0
+    }
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1
+    }
+
+    100% {
+        opacity: 0
+    }
+}
+
+.owl-height {
+    -webkit-transition: height 500ms ease-in-out;
+    -moz-transition: height 500ms ease-in-out;
+    -ms-transition: height 500ms ease-in-out;
+    -o-transition: height 500ms ease-in-out;
+    transition: height 500ms ease-in-out
+}
+
+.owl-loaded {
+    display: none;
+    width: 100%;
+    -webkit-tap-highlight-color: transparent;
+    position: relative;
+    z-index: 1
+}
+
+    .owl-loaded .owl-stage {
+        position: relative;
+        -ms-touch-action: pan-Y
+    }
+
+        .owl-loaded .owl-stage:after {
+            content: ".";
+            display: block;
+            clear: both;
+            visibility: hidden;
+            line-height: 0;
+            height: 0
+        }
+
+    .owl-loaded .owl-stage-outer {
+        position: relative;
+        overflow: hidden;
+        -webkit-transform: translate3d(0px,0,0)
+    }
+
+    .owl-loaded .owl-controls .owl-dot, .owl-loaded .owl-controls .owl-nav .owl-next, .owl-loaded .owl-controls .owl-nav .owl-prev {
+        cursor: pointer;
+        cursor: hand;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none
+    }
+
+    .owl-loaded.owl-loaded {
+        display: block
+    }
+
+    .owl-loaded.owl-loading {
+        opacity: 0;
+        display: block
+    }
+
+    .owl-loaded.owl-hidden {
+        opacity: 0
+    }
+
+    .owl-loaded .owl-refresh .owl-item {
+        display: none
+    }
+
+    .owl-loaded .owl-item {
+        position: relative;
+        min-height: 1px;
+        float: left;
+        -webkit-backface-visibility: hidden;
+        -webkit-tap-highlight-color: transparent;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+        .owl-loaded .owl-item img {
+            display: block;
+            width: 100%;
+            -webkit-transform-style: preserve-3d
+        }
+
+    .owl-loaded.owl-text-select-on .owl-item {
+        -webkit-user-select: auto;
+        -moz-user-select: auto;
+        -ms-user-select: auto;
+        user-select: auto
+    }
+
+    .owl-loaded .owl-grab {
+        cursor: move;
+        cursor: -webkit-grab;
+        cursor: -o-grab;
+        cursor: -ms-grab;
+        cursor: grab
+    }
+
+    .owl-loaded.owl-rtl {
+        direction: rtl
+    }
+
+        .owl-loaded.owl-rtl .owl-item {
+            float: right
+        }
+
+.no-js .owl-loaded {
+    display: block
+}
+
+.owl-loaded .owl-item .owl-lazy {
+    opacity: 0;
+    -webkit-transition: opacity 400ms ease;
+    -moz-transition: opacity 400ms ease;
+    -ms-transition: opacity 400ms ease;
+    -o-transition: opacity 400ms ease;
+    transition: opacity 400ms ease
+}
+
+.owl-loaded .owl-item img {
+    transform-style: preserve-3d
+}
+
+.owl-loaded .owl-video-wrapper {
+    position: relative;
+    height: 100%;
+    background: #000
+}
+
+.owl-loaded .owl-video-play-icon {
+    position: absolute;
+    height: 80px;
+    width: 80px;
+    left: 50%;
+    top: 50%;
+    margin-left: -40px;
+    margin-top: -40px;
+    background: url(owl.video.play.png) no-repeat;
+    cursor: pointer;
+    z-index: 1;
+    -webkit-backface-visibility: hidden;
+    -webkit-transition: scale 100ms ease;
+    -moz-transition: scale 100ms ease;
+    -ms-transition: scale 100ms ease;
+    -o-transition: scale 100ms ease;
+    transition: scale 100ms ease
+}
+
+    .owl-loaded .owl-video-play-icon:hover {
+        -webkit-transition: scale(1.3,1.3);
+        -moz-transition: scale(1.3,1.3);
+        -ms-transition: scale(1.3,1.3);
+        -o-transition: scale(1.3,1.3);
+        transition: scale(1.3,1.3)
+    }
+
+.owl-loaded .owl-video-playing .owl-video-play-icon, .owl-loaded .owl-video-playing .owl-video-tn {
+    display: none
+}
+
+.owl-loaded .owl-video-tn {
+    opacity: 0;
+    height: 100%;
+    background-position: center center;
+    background-repeat: no-repeat;
+    -webkit-background-size: contain;
+    -moz-background-size: contain;
+    -o-background-size: contain;
+    background-size: contain;
+    -webkit-transition: opacity 400ms ease;
+    -moz-transition: opacity 400ms ease;
+    -ms-transition: opacity 400ms ease;
+    -o-transition: opacity 400ms ease;
+    transition: opacity 400ms ease
+}
+
+.owl-loaded .owl-video-frame {
+    position: relative;
+    z-index: 1
+}

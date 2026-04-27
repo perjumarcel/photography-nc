@@ -1,0 +1,178 @@
+﻿@using System.Linq
+@using System.Web.Mvc.Html
+@using Photography.Album.Dto
+@using Photography.Web
+@model Photography.Web.Admin.Models.Albums.AlbumListViewModel
+@{
+    ViewBag.CurrentPageName = PageNames.Admin.Albums; // The menu item will be active for this page.
+}
+
+@section styles{
+    <link href="~/lib/bootstrap-material-datetimepicker/css/bootstrap-material-datetimepicker.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap-select/dist/css/bootstrap-select.css" rel="stylesheet" />
+}
+
+@section scripts
+{
+    <script src="~/lib/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js" asp-append-version="true"></script>
+    <script src="~/lib/bootstrap-select/dist/js/bootstrap-select.js" asp-append-version="true"></script>
+    <script src="~/areas/admin/Views/Albums/Index.js" asp-append-version="true"></script>
+}
+
+<div class="row clearfix">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="card">
+            <div class="header">
+                <h2>
+                    @L("Albums")
+                </h2>
+                <ul class="header-dropdown m-r--5">
+                    <li class="dropdown">
+                        <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                            <i class="material-icons">more_vert</i>
+                        </a>
+                        <ul class="dropdown-menu pull-right">
+                            <li><a id="AddButton" href="javascript:void(0);" class="waves-effect waves-block" data-toggle="modal" data-target="#AlbumCreateModal"><i class="material-icons">add</i>@L("Add")</a></li>
+                            <li><a id="RefreshButton" href="javascript:void(0);" class="waves-effect waves-block"><i class="material-icons">refresh</i>@L("Refresh")</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <div class="body table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>@L("Title")</th>
+                            <th>@L("Category")</th>
+                            <th>@L("ShowInHome")</th>
+                            <th>@L("ShowInPortfolio")</th>
+                            <th>@L("ShowInStories")</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var album in Model.Albums)
+                        {
+                            <tr>
+                                <td>@album.Title</td>
+                                <td>@(Model.Categories.Where(x => x.Value.Equals(album.CategoryId.ToString())).Select(x =>x.Text).FirstOrDefault())</td>
+                                <td><i class="material-icons" style="color:@(album.ShowInHome? "green":"red");">@(album.ShowInHome ? "check_box" : "indeterminate_check_box")</i></td>
+                                <td><i class="material-icons" style="color:@(album.ShowInPortfolio? "green":"red");">@(album.ShowInPortfolio ? "check_box" : "indeterminate_check_box")</i></td>
+                                <td><i class="material-icons" style="color:@(album.ShowInStories? "green":"red");">@(album.ShowInStories ? "check_box" : "indeterminate_check_box")</i></td>
+                                <td class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                        <i class="material-icons">menu</i>
+                                    </a>
+                                    <ul class="dropdown-menu pull-right">
+                                        <li><a href="#" class="waves-effect waves-block upload-images" data-album-id="@album.Id"><i class="material-icons">add</i>@L("UploadImages")</a></li>
+                                        <li><a href="#" class="waves-effect waves-block edit-album" data-album-id="@album.Id" data-toggle="modal" data-target="#AlbumEditModal"><i class="material-icons">edit</i>@L("Edit")</a></li>
+                                        <li><a href="#" class="waves-effect waves-block delete-album" data-album-id="@album.Id" data-album-title="@album.Title"><i class="material-icons">delete_sweep</i>@L("Delete")</a></li>
+                                    </ul>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <button type="button" class="btn btn-primary btn-circle waves-effect waves-circle waves-float pull-right" data-toggle="modal" data-target="#AlbumCreateModal">
+                    <i class="material-icons">add</i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="AlbumCreateModal" tabindex="-1" role="dialog" aria-labelledby="AlbumCreateModalLabel" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    <span>@L("CreateNewAlbum")</span>
+                </h4>
+            </div>
+            <form name="albumCreateForm" role="form" novalidate class="form-validation">
+                <div class="modal-body">
+                    <div class="row clearfix">
+                        <div class="col-sm-12">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <input type="text" name="Title" class="form-control" required maxlength="@AlbumDto.MaxTitleLength">
+                                    <label class="form-label">@L("Title")</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-sm-12">
+                            <div class="form-group form-float">
+                                <div class="form-group form-float">
+                                    @Html.DropDownList("CategoryId", Model.Categories, new { @class = "form-control selectpicker show-tick", id = "CategoryId", data_live_search = "true" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row clearfix">
+                        <div class="col-sm-12">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <input type="text" name="Client" class="form-control">
+                                    <label class="form-label">@L("Client")</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-sm-6">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <input type="text" name="Location" class="form-control">
+                                    <label class="form-label">@L("Location")</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group form-float">
+                                <div class='input-group date'>
+                                    <div class="form-line">
+                                        <input type="text" id='eventDateCreate' name="EventDate" class="form-control" placeholder="@L("EventDate")">
+                                    </div>
+                                    <span class="input-group-addon">
+                                        <i class="material-icons">date_range</i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-sm-4">
+                            <div class="checkbox">
+                                <input type="checkbox" name="ShowInHome" id="CreateAlbumShowInHome" value="true" class="filled-in" checked />
+                                <label for="CreateAlbumShowInHome">@L("ShowInHome")</label>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="checkbox">
+                                <input type="checkbox" name="ShowInPortfolio" id="CreateAlbumShowInPortfolio" value="true" class="filled-in" checked />
+                                <label for="CreateAlbumShowInPortfolio">@L("ShowInPortfolio")</label>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="checkbox">
+                                <input type="checkbox" name="ShowInStories" id="CreateAlbumShowInStories" value="true" class="filled-in" checked />
+                                <label for="CreateAlbumShowInStories">@L("ShowInStories")</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default waves-effect" data-dismiss="modal">@L("Cancel")</button>
+                    <button type="submit" class="btn btn-primary waves-effect">@L("Save")</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="AlbumEditModal" tabindex="-1" role="dialog" aria-labelledby="AlbumEditModalLabel" data-backdrop="static">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content modal-lg">
+        </div>
+    </div>
+</div>

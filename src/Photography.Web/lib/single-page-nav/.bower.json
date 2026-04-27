@@ -1,0 +1,14 @@
+{
+  "name": "single-page-nav",
+  "homepage": "https://github.com/ChrisWojcik/single-page-nav",
+  "_release": "a228f9249d",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "a228f9249d0988df8ccae28e0820a1edf77d60c3"
+  },
+  "_source": "https://github.com/ChrisWojcik/single-page-nav.git",
+  "_target": "*",
+  "_originalSource": "ChrisWojcik/single-page-nav",
+  "_direct": true
+}

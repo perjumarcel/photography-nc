@@ -1,0 +1,49 @@
+{
+  "name": "justifiedGallery",
+  "version": "3.7.0",
+  "homepage": "http://miromannino.github.io/Justified-Gallery/",
+  "authors": [
+    "Miro Mannino <miro.mannino@gmail.com>"
+  ],
+  "description": "This is a JQuery plugin that allows you to create an high quality justified gallery of images. Fill all the spaces!",
+  "main": [
+    "dist/js/jquery.justifiedGallery.js",
+    "dist/css/justifiedGallery.css"
+  ],
+  "keywords": [
+    "gallery",
+    "justified",
+    "grid",
+    "row",
+    "image",
+    "layout",
+    "flickr",
+    "google"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test"
+  ],
+  "devDependencies": {
+    "jquery": ">1.9.0",
+    "colorbox": "~1.6.0",
+    "swipebox": "~1.2.9",
+    "requirejs": "^2.3.5"
+  },
+  "dependencies": {
+    "jquery": ">1.9.0"
+  },
+  "_release": "3.7.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "3.7.0",
+    "commit": "2cfe37a7c6b5adb59e43b809b0c519007fed779b"
+  },
+  "_source": "https://github.com/miromannino/Justified-Gallery.git",
+  "_target": "^3.7.0",
+  "_originalSource": "justifiedGallery",
+  "_direct": true
+}

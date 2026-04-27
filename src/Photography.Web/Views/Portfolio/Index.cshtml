@@ -1,0 +1,59 @@
+﻿@{
+    ViewBag.CurrentPageName = PageNames.Frontend.Portfolio;
+}
+@using Photography.Album.Dto
+@using Photography.Category.Dto
+@using Photography.Web.Helpers
+@model Photography.Web.Models.Portfolio.PortfolioViewModel
+
+@section styles
+{
+    <meta property="og:title" content="Nicolae Covercenco - Portfolio" />
+    @{
+        AlbumListItemDto album = Model.Albums.FirstOrDefault();
+        if (album != null)
+        {
+            <meta property="og:image" content="@Url.Content(album.CoverUrl, true)" />
+        }
+        else
+        {
+            <meta property="og:image" content="@Url.Content(AlbumListItemDto.DefaultCoverUrl, true)" />
+        }
+    }
+}
+
+<section>
+    <div class="container">
+        <div class="filter-holder inline-filters">
+            <div class="gallery-filters">
+                <a href="#" class="gallery-filter gallery-filter-active" data-filter="*">All Albums</a>
+                @foreach (CategoryDto category in Model.Categories)
+                {
+                    <a href="#" class="gallery-filter " data-filter=".@category.Title">@category.Title</a>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="gallery-items grid-big-pad three-coulms vis-port-info">
+        @foreach (AlbumListItemDto album in Model.Albums)
+        {
+            <div class="gallery-item @album.Category">
+                <div class="grid-item-holder">
+                    <div class="box-item">
+                        <a href="@Url.Action("Details", "Portfolio", new {id = album.Id })">
+                            <span class="overlay"></span>
+                            <img src="@Url.Content(album.CoverUrl + "?width=500")" alt="@album.Title">
+                        </a>
+                    </div>
+                    <div class="grid-item">
+                        <h3>
+                            <a href="@Url.Action("Details", "Portfolio", new {id = album.Id })" class="ajax portfolio-link">@album.Title</a>
+                        </h3>
+                        <span>@album.Category</span>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</section>

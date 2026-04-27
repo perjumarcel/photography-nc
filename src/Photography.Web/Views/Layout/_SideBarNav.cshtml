@@ -1,0 +1,47 @@
+﻿@using Abp.Application.Navigation
+@using Photography.Web.Views
+
+@model Photography.Web.Models.Layout.SideBarNavViewModel
+@{
+    var calculateMenuUrl = new Func<string, string>(url =>
+                                                    {
+                                                        if (string.IsNullOrEmpty(url))
+                                                        {
+                                                            return ApplicationPath;
+                                                        }
+
+                                                        if (UrlChecker.IsRooted(url))
+                                                        {
+                                                            return url;
+                                                        }
+
+                                                        return ApplicationPath + url;
+                                                    });
+}
+<header>
+    <div class="header-inner">
+        <div class="logo-holder">
+            <a href="@Url.Action("Index", "Home")">
+                <img src="~/images/logo.png?ds" alt="Covercenco">
+            </a>
+        </div>
+        <div class="nav-button-holder">
+            <div class="nav-button vis-m">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        @*<div class="show-share isShare">Share</div>*@
+        <div class="nav-holder">
+            <nav>
+                <ul>
+                    @foreach (UserMenuItem menuItem in Model.MainMenu.Items)
+                    {
+                    <li>
+                        <a href="@calculateMenuUrl(menuItem.Url)" class="@(Model.ActiveMenuItemName == menuItem.Name ? "act-link" : "")">@menuItem.DisplayName</a>
+                    </li>
+                    }
+                </ul>
+            </nav>
+        </div>
+    </div>
+</header>

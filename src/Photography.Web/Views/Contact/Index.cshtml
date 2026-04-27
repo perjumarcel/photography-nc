@@ -1,0 +1,49 @@
+﻿@using Photography.Web.Helpers
+@{
+    ViewBag.CurrentPageName = PageNames.Frontend.Contact;
+}
+
+@section styles{
+<meta property="og:title" content="Nicolae Covercenco - Contacte" />
+<meta property="og:image" content="@Url.Content("~/images/about-me.jpg", true)" />
+
+<style>
+    .content.full-height {
+        background-color: #292929;
+    }
+</style>
+}
+
+
+
+<div class="custom-inner contact-inner">
+    <div class="container">
+        <h2>Contacts</h2>
+        <div class="separator"></div>
+        <div class="row">
+            <div class="col-md-4">
+                <p>@L("ContactDescription1")</p>
+                <p>@L("ContactDescription2")</p>
+                <ul class="contact-list">
+                    <li>
+                        <a href="https://www.google.ch/maps/place/Strada+Calea+Ie%C5%9Filor+10,+Chi%C8%99in%C4%83u+2069,+Moldova/%0A%4047.040779,28.7983463,17z/data=!3m1!4b1!4m5!3m4!1s0x40c97d937ebbb855:0x24ce7db26c720acb!8m2!3d47.040779!4d28.800535"
+                           target="_blank">Strada Calea Ieşilor 10, Chișinău, Moldova</a>
+                    </li>
+                    <li><a href="tel:+373 (68) 538 087">+373 (68) 538 087</a></li>
+                    <li><a href="mailto:NickCovercenco@yahoo.com">NickCovercenco@yahoo.com</a></li>
+                </ul>
+            </div>
+            <div class="col-md-8">
+                <div id="contact-form">
+                    <div id="message"></div>
+                    <form name="contactform" id="contactform">
+                        <input name="name" type="text" id="name" class="inputForm2" onClick="this.select()" value="Name">
+                        <input name="email" type="text" id="email" onClick="this.select()" value="E-mail">
+                        <textarea name="comments" id="comments" onClick="this.select()">Message</textarea>
+                        <input type="submit" class="send_message transition" id="submit" value="Send Message" />
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

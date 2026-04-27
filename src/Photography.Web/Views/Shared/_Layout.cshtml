@@ -1,0 +1,115 @@
+﻿@using System.Threading
+@using Abp.Timing
+
+@{
+    Layout = null;
+    SetAntiForgeryCookie();
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="~/favicon.ico">
+    <title>Nicolae Covercenco - Photography</title>
+    <link href="~/css/frontend/site.min.css" rel="stylesheet" asp-append-version="true" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="@Request.Url" />
+
+    <!-- View specific styles -->
+    @RenderSection("styles", false)
+    <script type="text/javascript">
+        // This is used to get the application's root path from javascript. It's useful if you're running application in a virtual directory under IIS.
+        var abp = abp || {};
+        abp.appPath = '@ApplicationPath';
+    </script>
+</head>
+<body>
+    <!-- Page Loader -->
+    <div class="page-loader-wrapper">
+        <div class="loader">
+            <div class="preloader">
+                <div class="spinner-layer pl-red">
+                    <div class="circle-clipper left">
+                        <div class="circle"></div>
+                    </div>
+                    <div class="circle-clipper right">
+                        <div class="circle"></div>
+                    </div>
+                </div>
+            </div>
+            <p>@L("PleaseWait")</p>
+        </div>
+    </div>
+    <!-- #END# Page Loader -->
+
+    <div id="main">
+        @Html.Action("SideBarNav", "Layout", new { activeMenu = ViewBag.ActiveMenu })
+
+        <div id="wrapper">
+            <!--=============== Content holder  ===============-->
+            <div class="content-holder elem scale-bg2 transition3">
+                <!-- Fixed title  -->
+                <div class="fixed-title"><span class="truncate">@ViewBag.CurrentPageName</span></div>
+
+                <!--=============== Content ===============-->
+                <div class="content full-height">
+                    @RenderBody()
+                </div>
+
+                <!-- Share container  -->
+                <div class="share-container  isShare" data-share="['facebook','pinterest','googleplus','twitter','linkedin']"></div>
+            </div>
+        </div>
+
+        <!-- wrapper end -->
+        <div class="left-decor"></div>
+        <div class="right-decor"></div>
+        <!--=============== Footer ===============-->
+        @Html.Action("Footer", "Layout")
+
+    </div>
+
+    <script src="~/js/frontend/yall.js?l" asp-append-version="true"></script>
+    <script src="~/js/frontend/site.min.js?laaj" asp-append-version="true"></script>
+    <script>
+        //Localizing momentjs
+        moment.locale('@Thread.CurrentThread.CurrentUICulture.Name');
+    </script>
+    <!-- Dynamic scripts of ABP system (They are created on runtime and can not be bundled) -->
+    <script src="~/api/AbpServiceProxies/GetAll?v=@(Clock.Now.Ticks)"></script>
+    <script src="~/AbpScripts/GetScripts?v=@(Clock.Now.Ticks)" type="text/javascript"></script>
+
+    <!-- View specific scripts -->
+    @RenderSection("scripts", required: false)
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-140670109-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-140670109-1');
+    </script>
+
+    <script type="text/javascript">
+        (function (m, e, t, r, i, k, a) {
+            m[i] = m[i] || function () { (m[i].a = m[i].a || []).push(arguments) };
+            m[i].l = 1 * new Date(); k = e.createElement(t), a = e.getElementsByTagName(t)[0], k.async = 1, k.src = r, a.parentNode.insertBefore(k, a)
+        })
+            (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+        ym(53758081, "init", {
+            clickmap: true,
+            trackLinks: true,
+            accurateTrackBounce: true,
+            webvisor: true
+        });
+    </script>
+    <noscript><div><img src="https://mc.yandex.ru/watch/53758081" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+</body>
+</html>

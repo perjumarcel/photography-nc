@@ -1,0 +1,33 @@
+﻿@using System.Web.Mvc.Html
+@using Photography.Web.Models.Common.Modals
+@model Photography.Category.Dto.CategoryDto
+@{
+    Layout = null;
+}
+@Html.Partial("~/Views/Shared/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel(L("EditCategory")))
+
+<div class="modal-body">
+    <form name="CategoryEditForm" role="form" novalidate class="form-validation">
+        <input type="hidden" name="Id" value="@Model.Id" />
+        <div class="row clearfix">
+            <div class="form-group form-float">
+                <div class="form-line">
+                    <input type="text" name="Title" id="EditTitle" class="form-control" value="@Model.Title" required maxlength="128">
+                    <label class="form-label">@L("Title")</label>
+                </div>
+            </div>
+        </div>
+        <div class="row clearfix">
+            <div class="col-sm-4">
+                <div class="checkbox">
+                    <input type="checkbox" name="ShowAsFilter" value="true" @(Model.ShowAsFilter ? "checked" : "") id="EditShowAsFilter" class="filled-in"/>
+                    <label for="EditShowAsFilter">@L("ShowAsFilter")</label>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@Html.Partial("~/Views/Shared/Modals/_ModalFooterWithSaveAndCancel.cshtml")
+
+<script src="~/areas/admin/Views/Categories/_EditCategoryModal.js" asp-append-version="true"></script>

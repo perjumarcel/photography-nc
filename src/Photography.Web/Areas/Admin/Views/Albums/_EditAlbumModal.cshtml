@@ -1,0 +1,88 @@
+﻿@using System.Web.Mvc.Html
+@using Photography.Album.Dto
+@using Photography.Web.Models.Common.Modals
+@model Photography.Web.Admin.Models.Albums.EditAlbumModalViewModel
+@{
+    Layout = null;
+}
+@Html.Partial("~/Views/Shared/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel(L("EditAlbum")))
+
+<div class="modal-body">
+    <form name="AlbumEditForm" role="form" novalidate class="form-validation">
+        <input type="hidden" name="Id" value="@Model.Album.Id" />
+        <div class="row clearfix">
+            <div class="col-sm-12">
+                <div class="form-group form-float">
+                    <div class="form-line">
+                        <input type="text" name="Title" value="@Model.Album.Title" class="form-control" required maxlength="@AlbumDto.MaxTitleLength">
+                        <label class="form-label">@L("Title")</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row clearfix">
+            <div class="col-sm-12">
+                <div class="form-group form-float">
+                    @Html.DropDownList("CategoryId", Model.Categories, new { @class = "form-control selectpicker show-tick", id = "CategoryId", data_live_search = "true" })
+                </div>
+            </div>
+        </div>
+
+        <div class="row clearfix">
+            <div class="col-sm-12">
+                <div class="form-group form-float">
+                    <div class="form-line">
+                        <input type="text" name="Client" value="@Model.Album.Client" class="form-control">
+                        <label class="form-label">@L("Client")</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row clearfix">
+            <div class="col-sm-6">
+                <div class="form-group form-float">
+                    <div class="form-line">
+                        <input type="text" name="Location" value="@Model.Album.Location" class="form-control">
+                        <label class="form-label">@L("Location")</label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group form-float">
+                    <div class='input-group date'>
+                        <div class="form-line">
+                            <input type="text" id='eventDateEdit' value="@(Model.Album.EventDate.HasValue ? Model.Album.EventDate.Value.ToString("dd/MM/yyyy") : "")" name="EventDate" class="form-control" placeholder="@L("EventDate")">
+                        </div>
+                        <span class="input-group-addon">
+                            <i class="material-icons">date_range</i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row clearfix">
+            <div class="col-sm-4">
+                <div class="checkbox">
+                    <input type="checkbox" name="ShowInHome" @(Model.Album.ShowInHome ? "checked" : "") value="true" id="EditAlbumShowInHome" class="filled-in" />
+                    <label for="EditAlbumShowInHome">@L("ShowInHome")</label>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="checkbox">
+                    <input type="checkbox" name="ShowInPortfolio" @(Model.Album.ShowInPortfolio ? "checked" : "") value="true" id="EditAlbumShowInPortfolio" class="filled-in" />
+                    <label for="EditAlbumShowInPortfolio">@L("ShowInPortfolio")</label>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="checkbox">
+                    <input type="checkbox" name="ShowInStories" @(Model.Album.ShowInStories ? "checked" : "") value="true" id="EditAlbumShowInStories" class="filled-in" />
+                    <label for="EditAlbumShowInStories">@L("ShowInStories")</label>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@Html.Partial("~/Views/Shared/Modals/_ModalFooterWithSaveAndCancel.cshtml")
+
+<script src="~/areas/admin/Views/Albums/_EditAlbumModal.js" asp-append-version="true"></script>
