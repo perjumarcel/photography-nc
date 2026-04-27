@@ -41,6 +41,16 @@ dotnet run -- migrate-images --dry-run
 dotnet run -- verify
 ```
 
+### Docker (local dev)
+```bash
+docker compose up -d postgres   # Postgres only — run the API on the host with hot reload
+docker compose up api           # Or build & run the containerised API
+```
+The Vite dev server is intentionally not containerised so frontend HMR runs at full speed; it proxies `/api/*` to the API on `:5080` via `client/vite.config.ts`.
+
+### CI
+GitHub Actions ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) builds + tests both the backend and the frontend on every push and pull request.
+
 ## Documentation
 
 See [`docs/README.md`](docs/README.md) for the full index — RFC, architecture, runbooks, post-migration verification.

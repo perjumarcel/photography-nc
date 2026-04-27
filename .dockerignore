@@ -1,0 +1,27 @@
+# Files excluded from the Docker build context for `src/Photography.Web/Dockerfile`.
+# Keeps the build fast and the resulting image small/reproducible by omitting
+# host-only files (node_modules, build outputs, IDE files, the legacy stack).
+
+**/bin
+**/obj
+**/.vs
+**/.vscode
+**/.idea
+**/.git
+**/.github
+
+# Frontend (built independently)
+client/node_modules
+client/dist
+client/.vite
+
+# Local storage and test results
+_storage
+TestResults
+
+# Docs / OS noise
+**/*.md
+**/.DS_Store
+
+# Legacy projects (not part of the new build)
+legacy/
