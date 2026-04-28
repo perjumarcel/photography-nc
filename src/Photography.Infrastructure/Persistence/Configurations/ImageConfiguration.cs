@@ -10,6 +10,8 @@ public sealed class ImageConfiguration : IEntityTypeConfiguration<Image>
     {
         b.ToTable("images");
         b.HasKey(x => x.Id);
+        // Domain-generated Guid; see AlbumConfiguration for the full explanation.
+        b.Property(x => x.Id).ValueGeneratedNever();
 
         b.Property(x => x.AlbumId).IsRequired();
         b.Property(x => x.OriginalName).HasMaxLength(Image.MaxOriginalNameLength).IsRequired();

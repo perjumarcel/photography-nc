@@ -10,6 +10,12 @@ public sealed class AlbumConfiguration : IEntityTypeConfiguration<Album>
     {
         b.ToTable("albums");
         b.HasKey(x => x.Id);
+        // The domain layer generates the Album Id (Guid). Without this, EF Core treats
+        // the key as ValueGeneratedOnAdd and — when a tracked Album is updated and a new
+        // child entity (Image) is added to its collection — incorrectly marks the new
+        // child as Modified instead of Added, producing UPDATE…WHERE Id=<new-guid> that
+        // affects 0 rows and a DbUpdateConcurrencyException.
+        b.Property(x => x.Id).ValueGeneratedNever();
 
         b.Property(x => x.Title).HasMaxLength(Album.MaxTitleLength).IsRequired();
         b.Property(x => x.Description).HasColumnType("text");
