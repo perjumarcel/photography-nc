@@ -1,0 +1,16 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Photography.Application/Photography.Application.csproj" />
+    <Project Path="src/Photography.Core/Photography.Core.csproj" />
+    <Project Path="src/Photography.Infrastructure/Photography.Infrastructure.csproj" />
+    <Project Path="src/Photography.SharedKernel/Photography.SharedKernel.csproj" />
+    <Project Path="src/Photography.Web/Photography.Web.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Photography.Application.Tests/Photography.Application.Tests.csproj" />
+    <Project Path="tests/Photography.Infrastructure.Tests/Photography.Infrastructure.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tools/">
+    <Project Path="tools/Photography.Migrator/Photography.Migrator.csproj" />
+  </Folder>
+</Solution>

@@ -1,0 +1,240 @@
+import i18n from 'i18next';
+import LanguageDetector from 'i18next-browser-languagedetector';
+import { initReactI18next } from 'react-i18next';
+
+const resources = {
+  ro: {
+    translation: {
+      'app.title': 'Nicolae Covercenco — Fotografie',
+      'app.brand': 'Covercenco',
+      'app.tagline': 'Fotografie',
+
+      'nav.home': 'Acasă',
+      'nav.portfolio': 'Portofoliu',
+      'nav.stories': 'Povești',
+      'nav.about': 'Despre',
+      'nav.contact': 'Contacte',
+      'nav.skipToContent': 'Sari la conținut',
+      'nav.openMenu': 'Deschide meniul',
+      'nav.closeMenu': 'Închide meniul',
+      'nav.languageSwitch': 'Schimbă limba',
+
+      'common.loading': 'Se încarcă...',
+      'common.empty': 'Nu există conținut momentan.',
+      'common.error': 'A apărut o eroare. Încearcă din nou.',
+      'common.retry': 'Reîncearcă',
+      'common.allAlbums': 'Toate albumele',
+      'common.previous': 'Anteriorul',
+      'common.next': 'Următorul',
+      'common.backToList': 'Înapoi la listă',
+      'common.viewAlbum': 'Vezi albumul',
+
+      'home.kicker': 'Portofoliu',
+      'home.title': 'Fotografie cu suflet',
+      'home.subtitle': 'Povești captate prin lentilă — nunți, evenimente, portrete și călătorii.',
+      'home.cta': 'Vezi portofoliul',
+
+      'portfolio.title': 'Portofoliu',
+      'portfolio.subtitle': 'O selecție de albume recente.',
+
+      'stories.title': 'Povești',
+      'stories.subtitle': 'Momente, oameni și locuri.',
+
+      'album.empty': 'Nu există albume.',
+      'album.error': 'Nu s-au putut încărca albumele.',
+      'album.images': '{{count}} imagini',
+      'album.images_one': '{{count}} imagine',
+      'album.info': 'Informații',
+      'album.category': 'Categorie',
+      'album.date': 'Data',
+      'album.client': 'Client',
+      'album.location': 'Locație',
+      'album.scrollDown': 'Derulează în jos',
+
+      'about.title': 'Despre mine',
+      'about.subtitle':
+        'Sunt Nicolae Covercenco, fotograf cu sediul în Chișinău. Lucrez cu lumina naturală și cu emoția momentului.',
+      'about.body':
+        'De peste un deceniu surprind povești — de la nunți și botezuri până la portrete editoriale și fotografie de călătorie. Fiecare proiect este o colaborare în care contează încrederea, atenția la detaliu și dorința de a păstra autenticitatea momentului.',
+
+      'contact.title': 'Contacte',
+      'contact.intro1':
+        'Pentru ședințe foto, evenimente sau colaborări, scrie-mi un mesaj. Răspund de obicei în 24 de ore.',
+      'contact.intro2':
+        'Mă deplasez în toată țara și în străinătate pentru evenimente sau proiecte.',
+      'contact.address': 'Strada Calea Ieșilor 10, Chișinău, Moldova',
+      'contact.phone': '+373 (68) 538 087',
+      'contact.email': 'NickCovercenco@yahoo.com',
+      'contact.formName': 'Nume',
+      'contact.formEmail': 'E-mail',
+      'contact.formMessage': 'Mesaj',
+      'contact.formSubmit': 'Trimite mesajul',
+      'contact.formSuccess': 'Mesajul a fost trimis. Mulțumesc!',
+
+      'admin.upload': 'Încarcă imagine',
+      'admin.cover': 'Setează ca copertă',
+      'admin.dashboard': 'Tablou de bord',
+      'admin.albums': 'Albume',
+      'admin.categories': 'Categorii',
+      'admin.signOut': 'Deconectare',
+      'admin.newAlbum': 'Album nou',
+      'admin.newCategory': 'Categorie nouă',
+      'admin.title': 'Titlu',
+      'admin.category': 'Categorie',
+      'admin.description': 'Descriere',
+      'admin.eventDate': 'Data evenimentului',
+      'admin.client': 'Client',
+      'admin.location': 'Locație',
+      'admin.showInPortfolio': 'Afișează în Portofoliu',
+      'admin.showInStories': 'Afișează în Povești',
+      'admin.showInHome': 'Afișează pe pagina principală',
+      'admin.showAsFilter': 'Afișează ca filtru',
+      'admin.displayOrder': 'Ordine',
+      'admin.slug': 'Slug',
+      'admin.name': 'Nume',
+      'admin.save': 'Salvează',
+      'admin.cancel': 'Renunță',
+      'admin.delete': 'Șterge',
+      'admin.confirmDelete': 'Sigur vrei să ștergi acest element?',
+      'admin.images': 'Imagini',
+      'admin.noImages': 'Nu există imagini încă.',
+      'admin.dragOrClick': 'Trage o imagine aici sau apasă pentru a alege un fișier',
+      'admin.uploading': 'Se încarcă...',
+      'admin.welcome': 'Bine ai venit, {{email}}',
+
+      'auth.title': 'Autentificare',
+      'auth.subtitle': 'Conectează-te pentru a administra site-ul.',
+      'auth.email': 'E-mail',
+      'auth.password': 'Parolă',
+      'auth.signIn': 'Conectare',
+
+      'footer.rights': '© {{year}} Covercenco. Toate drepturile rezervate.',
+      'footer.followFacebook': 'Facebook',
+      'footer.followInstagram': 'Instagram',
+      'footer.followTumblr': 'Tumblr',
+    },
+  },
+  en: {
+    translation: {
+      'app.title': 'Nicolae Covercenco — Photography',
+      'app.brand': 'Covercenco',
+      'app.tagline': 'Photography',
+
+      'nav.home': 'Home',
+      'nav.portfolio': 'Portfolio',
+      'nav.stories': 'Stories',
+      'nav.about': 'About',
+      'nav.contact': 'Contact',
+      'nav.skipToContent': 'Skip to content',
+      'nav.openMenu': 'Open menu',
+      'nav.closeMenu': 'Close menu',
+      'nav.languageSwitch': 'Switch language',
+
+      'common.loading': 'Loading...',
+      'common.empty': 'Nothing here yet.',
+      'common.error': 'Something went wrong. Please retry.',
+      'common.retry': 'Retry',
+      'common.allAlbums': 'All albums',
+      'common.previous': 'Previous',
+      'common.next': 'Next',
+      'common.backToList': 'Back to list',
+      'common.viewAlbum': 'View album',
+
+      'home.kicker': 'Portfolio',
+      'home.title': 'Photography with soul',
+      'home.subtitle': 'Stories caught through the lens — weddings, events, portraits and travel.',
+      'home.cta': 'See the portfolio',
+
+      'portfolio.title': 'Portfolio',
+      'portfolio.subtitle': 'A selection of recent albums.',
+
+      'stories.title': 'Stories',
+      'stories.subtitle': 'Moments, people and places.',
+
+      'album.empty': 'No albums yet.',
+      'album.error': 'Failed to load albums.',
+      'album.images': '{{count}} images',
+      'album.images_one': '{{count}} image',
+      'album.info': 'Info',
+      'album.category': 'Category',
+      'album.date': 'Date',
+      'album.client': 'Client',
+      'album.location': 'Location',
+      'album.scrollDown': 'Scroll down',
+
+      'about.title': 'About me',
+      'about.subtitle':
+        'I’m Nicolae Covercenco, a photographer based in Chișinău. I work with natural light and the emotion of the moment.',
+      'about.body':
+        'For over a decade I have been capturing stories — from weddings and christenings to editorial portraits and travel photography. Every project is a collaboration grounded in trust, attention to detail, and a desire to preserve the authenticity of the moment.',
+
+      'contact.title': 'Contact',
+      'contact.intro1':
+        'For photo sessions, events or collaborations, drop me a message. I usually reply within 24 hours.',
+      'contact.intro2': 'I travel across the country and abroad for events and projects.',
+      'contact.address': 'Strada Calea Ieșilor 10, Chișinău, Moldova',
+      'contact.phone': '+373 (68) 538 087',
+      'contact.email': 'NickCovercenco@yahoo.com',
+      'contact.formName': 'Name',
+      'contact.formEmail': 'E-mail',
+      'contact.formMessage': 'Message',
+      'contact.formSubmit': 'Send message',
+      'contact.formSuccess': 'Message sent. Thank you!',
+
+      'admin.upload': 'Upload image',
+      'admin.cover': 'Set as cover',
+      'admin.dashboard': 'Dashboard',
+      'admin.albums': 'Albums',
+      'admin.categories': 'Categories',
+      'admin.signOut': 'Sign out',
+      'admin.newAlbum': 'New album',
+      'admin.newCategory': 'New category',
+      'admin.title': 'Title',
+      'admin.category': 'Category',
+      'admin.description': 'Description',
+      'admin.eventDate': 'Event date',
+      'admin.client': 'Client',
+      'admin.location': 'Location',
+      'admin.showInPortfolio': 'Show in Portfolio',
+      'admin.showInStories': 'Show in Stories',
+      'admin.showInHome': 'Show on home page',
+      'admin.showAsFilter': 'Show as filter',
+      'admin.displayOrder': 'Display order',
+      'admin.slug': 'Slug',
+      'admin.name': 'Name',
+      'admin.save': 'Save',
+      'admin.cancel': 'Cancel',
+      'admin.delete': 'Delete',
+      'admin.confirmDelete': 'Are you sure you want to delete this item?',
+      'admin.images': 'Images',
+      'admin.noImages': 'No images yet.',
+      'admin.dragOrClick': 'Drag an image here or click to choose a file',
+      'admin.uploading': 'Uploading...',
+      'admin.welcome': 'Welcome, {{email}}',
+
+      'auth.title': 'Sign in',
+      'auth.subtitle': 'Sign in to manage the site.',
+      'auth.email': 'Email',
+      'auth.password': 'Password',
+      'auth.signIn': 'Sign in',
+
+      'footer.rights': '© {{year}} Covercenco. All rights reserved.',
+      'footer.followFacebook': 'Facebook',
+      'footer.followInstagram': 'Instagram',
+      'footer.followTumblr': 'Tumblr',
+    },
+  },
+};
+
+void i18n
+  .use(LanguageDetector)
+  .use(initReactI18next)
+  .init({
+    resources,
+    fallbackLng: 'ro',
+    supportedLngs: ['ro', 'en'],
+    interpolation: { escapeValue: false },
+    detection: { order: ['localStorage', 'navigator'] },
+  });
+
+export default i18n;

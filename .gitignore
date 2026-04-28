@@ -1,0 +1,19 @@
+# Build / IDE
+bin/
+obj/
+.vs/
+.vscode/
+*.user
+
+# Frontend
+node_modules/
+dist/
+client/.vite/
+
+# Local storage / migration artifacts
+src/Photography.Web/_storage/
+tools/Photography.Migrator/_storage/
+migration-manifest.json
+
+# Logs
+*.log

@@ -1,0 +1,93 @@
+@import "tailwindcss";
+
+/* ===== Design tokens (preserve the legacy "Outdoor" theme) ===== */
+@theme {
+  /* Brand accent (CTAs only, kept from prior scaffold) */
+  --color-brand: #c9a86a;
+  --color-brand-dark: #a98648;
+
+  /* Neutrals — match legacy: cream/off-white background, dark sidebar */
+  --color-paper: #f9f9f9;          /* legacy body background */
+  --color-paper-soft: #f1f0ec;
+  --color-ink: #111111;
+  --color-ink-soft: #292929;        /* legacy About/Contact dark surface */
+  --color-ink-muted: #6b6b6b;
+  --color-rule: #e5e3dd;            /* hairlines */
+
+  /* Sidebar / dark surfaces */
+  --color-shell: #161616;
+  --color-shell-soft: #1f1f1f;
+
+  /* Typography */
+  --font-display: "Cormorant Garamond", "Times New Roman", serif;
+  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  /* Container / sidebar widths matching legacy fixed header (~110px on desktop) */
+  --shell-w: 240px;
+  --decor-w: 28px;
+}
+
+/* Use the cream background everywhere by default, dark for shell components. */
+html, body, #root { height: 100%; }
+body {
+  font-family: var(--font-sans);
+  color: var(--color-ink);
+  background: var(--color-paper);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, .font-display {
+  font-family: var(--font-display);
+  letter-spacing: 0.01em;
+}
+
+/* Legacy "separator" — short underline beneath section titles. */
+.legacy-separator {
+  display: inline-block;
+  width: 60px;
+  height: 2px;
+  background: var(--color-ink);
+  margin: 0.5rem 0 1.25rem;
+}
+
+/* Visible focus ring for keyboard users only. */
+:where(a, button, input, textarea, select, [tabindex]):focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Skip link */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  background: var(--color-ink);
+  color: #fff;
+  padding: 0.75rem 1rem;
+  z-index: 100;
+}
+.skip-link:focus { left: 0.5rem; top: 0.5rem; }
+
+/* Shimmer-free loader (used during initial page boot). */
+.dot-pulse {
+  width: 8px; height: 8px; border-radius: 9999px;
+  background: var(--color-ink);
+  display: inline-block;
+  animation: dot-pulse 1.2s infinite ease-in-out;
+}
+@keyframes dot-pulse {
+  0%, 80%, 100% { opacity: 0.2; transform: scale(0.85); }
+  40%           { opacity: 1;   transform: scale(1); }
+}
+
+/* Respect reduced-motion users globally. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
