@@ -113,6 +113,8 @@ public sealed class UpdateAlbumHandler : IRequestHandler<UpdateAlbumCommand, Res
 
 internal static class AlbumSlugGenerator
 {
+    private const int MaxAttempts = 100;
+
     public static async Task<string> CreateUniqueAsync(
         string source,
         Func<string, Task<bool>> existsAsync,
@@ -121,12 +123,14 @@ internal static class AlbumSlugGenerator
         var baseSlug = Normalize(source);
         var candidate = baseSlug;
         var suffix = 2;
-        while (await existsAsync(candidate))
+        for (var attempt = 1; attempt <= MaxAttempts && await existsAsync(candidate); attempt++)
         {
             var suffixText = $"-{suffix++}";
             var maxBaseLength = Math.Max(1, Album.MaxSlugLength - suffixText.Length);
             candidate = $"{baseSlug[..Math.Min(baseSlug.Length, maxBaseLength)].Trim('-')}{suffixText}";
         }
+        if (await existsAsync(candidate))
+            throw new ArgumentException("Unable to generate a unique album slug", nameof(source));
         return candidate;
     }
 

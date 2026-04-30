@@ -27,14 +27,15 @@ export function useAlbumImageUploadQueue(albumId: string): {
     }));
     setUploadQueue(queued);
 
-    for (const [index, file] of files.entries()) {
+    setUploadQueue((queue) => queue.map((item) => ({ ...item, status: 'uploading', error: undefined })));
+
+    await Promise.all(files.map(async (file, index) => {
       const queueId = queued[index].id;
-      setUploadQueue((queue) => updateItem(queue, queueId, { status: 'uploading', error: undefined }));
       const result = await dispatch(uploadAlbumImage({ albumId, file }));
       setUploadQueue((queue) => updateItem(queue, queueId, uploadAlbumImage.fulfilled.match(result)
         ? { status: 'succeeded', error: undefined }
         : { status: 'failed', error: String(result.payload ?? 'Upload failed') }));
-    }
+    }));
   }, [albumId, dispatch]);
 
   return { uploadQueue, uploadFiles };

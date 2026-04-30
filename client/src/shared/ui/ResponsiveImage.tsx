@@ -9,6 +9,13 @@ export interface ResponsiveImageVariants {
   full: string;
 }
 
+const responsiveWidths = {
+  thumbnail: 240,
+  card: 640,
+  hero: 1600,
+  full: 2400,
+} as const;
+
 interface ResponsiveImageProps {
   src: string;
   variants?: ResponsiveImageVariants | null;
@@ -38,10 +45,10 @@ export function ResponsiveImage({
   const placeholderStyle = variants?.placeholder ? createPlaceholderStyle(variants.placeholder) : undefined;
   const srcSet = variants
     ? [
-      `${variants.thumbnail} 240w`,
-      `${variants.card} 640w`,
-      `${variants.hero} 1600w`,
-      `${variants.full} 2400w`,
+      `${variants.thumbnail} ${responsiveWidths.thumbnail}w`,
+      `${variants.card} ${responsiveWidths.card}w`,
+      `${variants.hero} ${responsiveWidths.hero}w`,
+      `${variants.full} ${responsiveWidths.full}w`,
     ].join(', ')
     : undefined;
 

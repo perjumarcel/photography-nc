@@ -16,6 +16,8 @@ export function PhotoGallery({ images }: PhotoGalleryProps): React.JSX.Element {
   useEffect(() => {
     if (activeIndex === null) return;
     const onKey = (event: KeyboardEvent): void => {
+      if (!['Escape', 'ArrowRight', 'ArrowLeft', 'Home', 'End'].includes(event.key)) return;
+      event.preventDefault();
       if (event.key === 'Escape') setActiveIndex(null);
       if (event.key === 'ArrowRight') setActiveIndex((i) => (i === null ? i : Math.min(images.length - 1, i + 1)));
       if (event.key === 'ArrowLeft') setActiveIndex((i) => (i === null ? i : Math.max(0, i - 1)));
