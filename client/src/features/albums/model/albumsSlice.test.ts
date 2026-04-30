@@ -11,6 +11,16 @@ const sample: AlbumDto = {
   showInHome: false,
   categoryId: 1,
   imageCount: 0,
+  coverPublicUrl: '/cover.jpg',
+  coverWidth: 100,
+  coverHeight: 80,
+  coverVariants: {
+    placeholder: '/cover.jpg?width=40',
+    thumbnail: '/cover.jpg?width=240',
+    card: '/cover.jpg?width=640',
+    hero: '/cover.jpg?width=1600',
+    full: '/cover.jpg',
+  },
 };
 
 describe('albumsSlice', () => {

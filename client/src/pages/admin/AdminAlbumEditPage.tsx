@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Link, useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import { Button } from '@/shared/ui/Button';
+import { ResponsiveImage } from '@/shared/ui/ResponsiveImage';
 import {
   deleteAlbumImage, fetchAdminAlbum, fetchAdminCategories, setAlbumCover,
   updateAdminAlbum, uploadAlbumImage,
@@ -36,6 +37,7 @@ export function AdminAlbumEditPage(): React.JSX.Element {
     eventDate: '', client: '', location: '',
     showInPortfolio: false, showInStories: false, showInHome: false,
   });
+  const [uploadQueue, setUploadQueue] = useState<Array<{ name: string; status: 'queued' | 'uploading' | 'succeeded' | 'failed'; error?: string }>>([]);
 
   useEffect(() => {
     if (!id) return;
@@ -81,10 +83,23 @@ export function AdminAlbumEditPage(): React.JSX.Element {
     }));
   };
 
+  const uploadFiles = async (files: File[]): Promise<void> => {
+    if (files.length === 0) return;
+    setUploadQueue(files.map((file) => ({ name: file.name, status: 'queued' })));
+    for (const file of files) {
+      setUploadQueue((queue) => queue.map((item) => item.name === file.name ? { ...item, status: 'uploading' } : item));
+      const result = await dispatch(uploadAlbumImage({ albumId: id, file }));
+      setUploadQueue((queue) => queue.map((item) => item.name === file.name
+        ? uploadAlbumImage.fulfilled.match(result)
+          ? { ...item, status: 'succeeded', error: undefined }
+          : { ...item, status: 'failed', error: String(result.payload ?? 'Upload failed') }
+        : item));
+    }
+  };
+
   const onPickFile = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    void dispatch(uploadAlbumImage({ albumId: id, file })).then(() => {
+    const files = Array.from(e.target.files ?? []);
+    void uploadFiles(files).then(() => {
       if (fileInput.current) fileInput.current.value = '';
     });
   };
@@ -174,6 +189,7 @@ export function AdminAlbumEditPage(): React.JSX.Element {
                 ref={fileInput}
                 type="file"
                 accept="image/*"
+                multiple
                 className="sr-only"
                 onChange={onPickFile}
               />
@@ -182,6 +198,19 @@ export function AdminAlbumEditPage(): React.JSX.Element {
 
           {mutationStatus === 'loading' && (
             <p className="mt-3 text-xs text-ink/60">{t('admin.uploading')}</p>
+          )}
+
+          {uploadQueue.length > 0 && (
+            <ul className="mt-4 space-y-2 rounded-xl border border-zinc-200 bg-paper p-4 text-xs">
+              {uploadQueue.map((item) => (
+                <li key={item.name} className="flex items-center justify-between gap-4">
+                  <span className="truncate">{item.name}</span>
+                  <span className={item.status === 'failed' ? 'text-red-600' : 'text-ink/60'}>
+                    {item.error ?? item.status}
+                  </span>
+                </li>
+              ))}
+            </ul>
           )}
 
           {album.images.length === 0 ? (
@@ -194,13 +223,14 @@ export function AdminAlbumEditPage(): React.JSX.Element {
                 const isCover = album.coverImageId === img.id;
                 return (
                   <li key={img.id} className="overflow-hidden rounded-xl border border-zinc-200 bg-paper">
-                    <img
+                    <ResponsiveImage
                       src={img.publicUrl}
+                      variants={img.variants}
                       alt={img.originalName}
                       width={img.width}
                       height={img.height}
-                      loading="lazy"
-                      className="aspect-[4/3] w-full object-cover"
+                      sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                      className="aspect-[4/3] w-full"
                     />
                     <div className="flex items-center justify-between gap-2 p-3 text-xs">
                       <span className="truncate text-ink/70" title={img.originalName}>{img.originalName}</span>

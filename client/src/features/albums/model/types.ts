@@ -13,6 +13,18 @@ export interface AlbumDto {
   categoryId: number;
   imageCount: number;
   coverImageId?: string | null;
+  coverPublicUrl?: string | null;
+  coverWidth?: number | null;
+  coverHeight?: number | null;
+  coverVariants?: ImageVariantsDto | null;
+}
+
+export interface ImageVariantsDto {
+  placeholder: string;
+  thumbnail: string;
+  card: string;
+  hero: string;
+  full: string;
 }
 
 export interface ImageDto {
@@ -21,6 +33,7 @@ export interface ImageDto {
   originalName: string;
   storageKey: string;
   publicUrl: string;
+  variants: ImageVariantsDto;
   width: number;
   height: number;
   orientation: number;

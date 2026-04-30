@@ -1,7 +1,10 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { ResponsiveImage } from '@/shared/ui/ResponsiveImage';
+import { Seo } from '@/shared/ui/Seo';
 import type { AlbumDetailsDto } from '../model/types';
+import { PhotoGallery } from './PhotoGallery';
 
 interface AlbumDetailProps {
   album: AlbumDetailsDto;
@@ -18,21 +21,33 @@ interface AlbumDetailProps {
 export function AlbumDetail({ album, categoryName }: AlbumDetailProps): React.JSX.Element {
   const { t, i18n } = useTranslation();
   const cover = album.images.find((i) => i.imageType === 1) ?? album.images[0];
+  const seoDescription = album.description ?? [categoryName, album.location].filter(Boolean).join(' · ');
 
   return (
     <article>
+      <Seo
+        title={`${album.title} — ${t('app.title')}`}
+        description={seoDescription || t('portfolio.subtitle')}
+        image={album.coverVariants?.hero ?? cover?.variants.hero ?? cover?.publicUrl}
+        canonicalPath={`/portfolio/${album.id}`}
+      />
       {/* Hero / parallax-style cover */}
       <section
         className="relative flex h-[60vh] min-h-[360px] w-full items-end overflow-hidden bg-ink-soft text-paper"
         aria-labelledby="album-title"
       >
         {cover && (
-          <img
+          <ResponsiveImage
             src={cover.publicUrl}
+            variants={cover.variants}
             alt=""
-            aria-hidden="true"
-            className="absolute inset-0 h-full w-full object-cover opacity-70"
+            width={cover.width}
+            height={cover.height}
+            sizes="100vw"
+            className="absolute inset-0 h-full w-full"
+            imgClassName="opacity-70"
             loading="eager"
+            fetchPriority="high"
           />
         )}
         <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/30 to-transparent" />
@@ -87,32 +102,7 @@ export function AlbumDetail({ album, categoryName }: AlbumDetailProps): React.JS
             {album.images.length === 0 ? (
               <p className="text-ink-muted">{t('common.empty')}</p>
             ) : (
-              <ul className="grid auto-rows-[180px] grid-cols-2 gap-3 sm:auto-rows-[220px] md:grid-cols-3">
-                {album.images.map((img) => {
-                  // Orientation: 0 = vertical → tall card; 1 = horizontal → wide card.
-                  const tall = img.orientation === 0;
-                  return (
-                    <li
-                      key={img.id}
-                      className={
-                        tall ? 'row-span-2' : 'col-span-2 sm:col-span-1 md:col-span-2'
-                      }
-                    >
-                      <figure className="h-full w-full overflow-hidden bg-paper-soft">
-                        <img
-                          src={img.publicUrl}
-                          alt={img.originalName}
-                          loading="lazy"
-                          decoding="async"
-                          className="h-full w-full object-cover transition-transform duration-700 hover:scale-[1.02]"
-                          width={img.width}
-                          height={img.height}
-                        />
-                      </figure>
-                    </li>
-                  );
-                })}
-              </ul>
+              <PhotoGallery images={album.images} />
             )}
           </div>
         </div>

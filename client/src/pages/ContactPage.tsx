@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { ContactFormContainer } from '@/features/contact/ui/ContactFormContainer';
+import { Seo } from '@/shared/ui/Seo';
 
 /**
  * Contact page. Mirrors `Contact/Index.cshtml` — info column on the left,
@@ -12,6 +13,7 @@ export function ContactPage(): React.JSX.Element {
 
   return (
     <section className="bg-ink-soft text-paper">
+      <Seo title={`${t('contact.title')} — ${t('app.title')}`} description={t('contact.intro1')} canonicalPath="/contact" />
       <div className="mx-auto w-full max-w-6xl px-6 py-12 sm:py-16">
         <p className="text-[0.7rem] uppercase tracking-[0.4em] text-paper/60">
           {t('app.brand')}

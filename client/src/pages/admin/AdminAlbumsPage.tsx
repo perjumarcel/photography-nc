@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import { Button } from '@/shared/ui/Button';
+import { ResponsiveImage } from '@/shared/ui/ResponsiveImage';
 import {
   createAdminAlbum, deleteAdminAlbum, fetchAdminAlbums, fetchAdminCategories,
 } from '@/features/admin/api/thunks';
@@ -94,6 +95,7 @@ export function AdminAlbumsPage(): React.JSX.Element {
           <thead className="bg-paper-soft text-left text-xs uppercase tracking-[0.2em] text-ink/60">
             <tr>
               <th className="px-4 py-3">{t('admin.title')}</th>
+              <th className="px-4 py-3">{t('admin.cover')}</th>
               <th className="px-4 py-3">{t('admin.category')}</th>
               <th className="px-4 py-3">{t('admin.images')}</th>
               <th className="px-4 py-3" />
@@ -101,15 +103,30 @@ export function AdminAlbumsPage(): React.JSX.Element {
           </thead>
           <tbody className="divide-y divide-zinc-100">
             {albumsStatus === 'loading' && (
-              <tr><td colSpan={4} className="px-4 py-6 text-center text-ink/60">{t('common.loading')}</td></tr>
+              <tr><td colSpan={5} className="px-4 py-6 text-center text-ink/60">{t('common.loading')}</td></tr>
             )}
             {albumsStatus === 'succeeded' && albums.length === 0 && (
-              <tr><td colSpan={4} className="px-4 py-6 text-center text-ink/60">{t('common.empty')}</td></tr>
+              <tr><td colSpan={5} className="px-4 py-6 text-center text-ink/60">{t('common.empty')}</td></tr>
             )}
             {albums.map((a) => (
               <tr key={a.id}>
                 <td className="px-4 py-3 text-ink">
                   <Link to={`/admin/albums/${a.id}`} className="hover:text-brand">{a.title}</Link>
+                </td>
+                <td className="px-4 py-3">
+                  {a.coverPublicUrl ? (
+                    <ResponsiveImage
+                      src={a.coverPublicUrl}
+                      variants={a.coverVariants}
+                      alt=""
+                      width={a.coverWidth}
+                      height={a.coverHeight}
+                      sizes="96px"
+                      className="h-14 w-20 rounded-lg"
+                    />
+                  ) : (
+                    <div className="h-14 w-20 rounded-lg bg-paper-soft" aria-hidden="true" />
+                  )}
                 </td>
                 <td className="px-4 py-3 text-ink/70">
                   {categories.find((c) => c.id === a.categoryId)?.name ?? a.categoryId}

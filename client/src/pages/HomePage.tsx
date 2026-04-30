@@ -6,6 +6,8 @@ import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import { fetchPublicAlbums } from '@/features/albums/api/thunks';
 import { Button } from '@/shared/ui/Button';
 import { Skeleton } from '@/shared/ui/Skeleton';
+import { ResponsiveImage } from '@/shared/ui/ResponsiveImage';
+import { Seo } from '@/shared/ui/Seo';
 
 /**
  * Home page. Mirrors the legacy `Home/Index.cshtml`:
@@ -27,6 +29,7 @@ export function HomePage(): React.JSX.Element {
 
   return (
     <>
+      <Seo title={t('app.title')} description={t('home.subtitle')} image={featured[0]?.coverVariants?.hero ?? featured[0]?.coverPublicUrl} canonicalPath="/" />
       {/* Hero */}
       <section className="mx-auto flex w-full max-w-6xl flex-col justify-center px-6 py-16 sm:py-20 lg:py-28">
         <p className="text-[0.7rem] uppercase tracking-[0.4em] text-ink-muted">
@@ -72,9 +75,22 @@ export function HomePage(): React.JSX.Element {
                   aria-label={album.title}
                 >
                   <div className="absolute inset-0 flex items-center justify-center text-ink-muted">
-                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" aria-hidden="true">
-                      <rect x="3" y="3" width="18" height="18" rx="2" />
-                    </svg>
+                    {album.coverPublicUrl ? (
+                      <ResponsiveImage
+                        src={album.coverPublicUrl}
+                        variants={album.coverVariants}
+                        alt={album.title}
+                        width={album.coverWidth}
+                        height={album.coverHeight}
+                        sizes="(min-width: 1024px) 30vw, (min-width: 768px) 40vw, 80vw"
+                        className="h-full w-full"
+                        imgClassName="transition-transform duration-700 group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:transform-none"
+                      />
+                    ) : (
+                      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" aria-hidden="true">
+                        <rect x="3" y="3" width="18" height="18" rx="2" />
+                      </svg>
+                    )}
                   </div>
                   <span aria-hidden="true" className="absolute inset-0 bg-ink/20 transition-colors group-hover:bg-ink/40" />
                   <div className="absolute bottom-0 left-0 right-0 p-5 text-paper">
