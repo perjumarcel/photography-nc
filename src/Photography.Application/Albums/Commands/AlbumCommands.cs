@@ -123,7 +123,6 @@ internal static class AlbumSlugGenerator
         var suffix = 2;
         while (await existsAsync(candidate))
         {
-            ct.ThrowIfCancellationRequested();
             var suffixText = $"-{suffix++}";
             var maxBaseLength = Math.Max(1, Album.MaxSlugLength - suffixText.Length);
             candidate = $"{baseSlug[..Math.Min(baseSlug.Length, maxBaseLength)].Trim('-')}{suffixText}";

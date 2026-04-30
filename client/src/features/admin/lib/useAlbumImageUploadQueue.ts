@@ -20,8 +20,8 @@ export function useAlbumImageUploadQueue(albumId: string): {
 
   const uploadFiles = useCallback(async (files: File[]): Promise<void> => {
     if (files.length === 0) return;
-    const queued = files.map((file, index) => ({
-      id: `${file.name}-${file.size}-${file.lastModified}-${index}`,
+    const queued = files.map((file) => ({
+      id: crypto.randomUUID(),
       name: file.name,
       status: 'queued' as const,
     }));

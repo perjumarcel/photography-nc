@@ -24,13 +24,14 @@ export function AlbumDetail({ album, categoryName, previousAlbum, nextAlbum }: A
   const { t, i18n } = useTranslation();
   const cover = album.images.find((i) => i.imageType === 1) ?? album.images[0];
   const seoTitle = album.seoTitle || album.title;
-  const seoDescription = album.seoDescription || album.description || [categoryName, album.location].filter(Boolean).join(' · ');
+  const metadataDescription = [categoryName, album.location].filter(Boolean).join(' · ');
+  const seoDescription = album.seoDescription || album.description || metadataDescription || t('portfolio.subtitle');
 
   return (
     <article>
       <Seo
         title={`${seoTitle} — ${t('app.title')}`}
-        description={seoDescription || t('portfolio.subtitle')}
+        description={seoDescription}
         image={album.coverVariants?.hero ?? cover?.variants.hero ?? cover?.publicUrl}
         canonicalPath={`/portfolio/${album.slug || album.id}`}
       />

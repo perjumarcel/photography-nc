@@ -19,6 +19,8 @@ export function PhotoGallery({ images }: PhotoGalleryProps): React.JSX.Element {
       if (event.key === 'Escape') setActiveIndex(null);
       if (event.key === 'ArrowRight') setActiveIndex((i) => (i === null ? i : Math.min(images.length - 1, i + 1)));
       if (event.key === 'ArrowLeft') setActiveIndex((i) => (i === null ? i : Math.max(0, i - 1)));
+      if (event.key === 'Home') setActiveIndex(0);
+      if (event.key === 'End') setActiveIndex(images.length - 1);
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);

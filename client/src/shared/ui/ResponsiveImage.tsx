@@ -35,6 +35,7 @@ export function ResponsiveImage({
   fetchPriority = 'auto',
 }: ResponsiveImageProps): React.JSX.Element {
   const source = variants?.card ?? src;
+  const placeholderStyle = variants?.placeholder ? createPlaceholderStyle(variants.placeholder) : undefined;
   const srcSet = variants
     ? [
       `${variants.thumbnail} 240w`,
@@ -47,7 +48,7 @@ export function ResponsiveImage({
   return (
     <div
       className={cn('relative overflow-hidden bg-paper-soft', className)}
-      style={variants?.placeholder ? { backgroundImage: `url("${variants.placeholder}")`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined}
+      style={placeholderStyle}
     >
       <img
         src={source}
@@ -63,4 +64,24 @@ export function ResponsiveImage({
       />
     </div>
   );
+}
+
+function createPlaceholderStyle(url: string): React.CSSProperties | undefined {
+  if (!isSafeImageUrl(url)) return undefined;
+  return {
+    backgroundImage: `url(${JSON.stringify(url)})`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+  };
+}
+
+function isSafeImageUrl(url: string): boolean {
+  if (/["'()\u0000-\u001f]/.test(url)) return false;
+  if (url.startsWith('/')) return true;
+  try {
+    const parsed = new URL(url);
+    return parsed.protocol === 'https:' || parsed.protocol === 'http:';
+  } catch {
+    return false;
+  }
 }

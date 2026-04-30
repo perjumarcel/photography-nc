@@ -128,6 +128,9 @@ public static class DbMigrator
             .ToArray());
         while (slug.Contains("--", StringComparison.Ordinal)) slug = slug.Replace("--", "-", StringComparison.Ordinal);
         slug = slug.Trim('-');
-        return string.IsNullOrWhiteSpace(slug) ? id.ToString("N") : slug[..Math.Min(slug.Length, Album.MaxSlugLength)];
+        if (string.IsNullOrWhiteSpace(slug)) slug = "album";
+        var suffix = $"-{id:N}"[..9];
+        var maxBaseLength = Album.MaxSlugLength - suffix.Length;
+        return $"{slug[..Math.Min(slug.Length, maxBaseLength)].Trim('-')}{suffix}";
     }
 }
