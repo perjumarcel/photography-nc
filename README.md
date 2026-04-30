@@ -13,7 +13,7 @@ Photography portfolio platform — modernized stack.
 | Storage     | Cloudflare **R2** (S3-compatible) with local-fs fallback              |
 | Frontend    | React 19 + TypeScript (strict) + Vite + Redux Toolkit + Tailwind CSS 4 + shadcn/Radix |
 | i18n        | i18next + react-i18next (RO default, EN supported)                    |
-| Tests       | xUnit + Moq (backend) · Vitest (frontend, Cypress flows planned)      |
+| Tests       | xUnit + Moq (backend) · Vitest + Cypress (frontend)                   |
 
 ## Quick start
 
@@ -31,7 +31,7 @@ npm install
 npm run dev      # http://localhost:5173
 npm run build
 npx vitest run
-npm run e2e      # start Vite first; Cypress runs against http://localhost:5173
+npm run e2e      # start Vite first; Cypress runs against http://127.0.0.1:5173
 ```
 
 ### Migration
