@@ -49,7 +49,7 @@ describe('public gallery', () => {
   beforeEach(() => {
     cy.intercept('GET', '/api/public/categories', categories).as('categories');
     cy.intercept('GET', '/api/public/albums', albums).as('albums');
-    cy.intercept('GET', '/api/public/albums/summer-wedding', {
+    cy.intercept('GET', `/api/public/albums/${albums[0].slug}`, {
       ...albums[0],
       description: 'A bright outdoor wedding gallery.',
       images: [
@@ -95,7 +95,7 @@ describe('public gallery', () => {
     cy.contains('a', 'Summer Wedding').click();
     cy.wait('@albumDetails');
 
-    cy.url().should('include', '/portfolio/summer-wedding');
+    cy.url().should('include', `/portfolio/${albums[0].slug}`);
     cy.get('h1').contains('Summer Wedding').should('be.visible');
     cy.contains('A bright outdoor wedding gallery.').should('be.visible');
   });
