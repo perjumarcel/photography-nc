@@ -70,6 +70,7 @@ const resources = {
       'contact.formName': 'Nume',
       'contact.formEmail': 'E-mail',
       'contact.formMessage': 'Mesaj',
+      'contact.formWebsite': 'Website',
       'contact.formSubmit': 'Trimite mesajul',
       'contact.formSuccess': 'Mesajul a fost trimis. Mulțumesc!',
 
@@ -185,6 +186,7 @@ const resources = {
       'contact.formName': 'Name',
       'contact.formEmail': 'E-mail',
       'contact.formMessage': 'Message',
+      'contact.formWebsite': 'Website',
       'contact.formSubmit': 'Send message',
       'contact.formSuccess': 'Message sent. Thank you!',
 

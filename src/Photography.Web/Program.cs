@@ -83,6 +83,12 @@ builder.Services.AddRateLimiter(options =>
         o.PermitLimit = 120;
         o.QueueLimit = 0;
     });
+    options.AddFixedWindowLimiter("contact", o =>
+    {
+        o.Window = TimeSpan.FromMinutes(1);
+        o.PermitLimit = 20;
+        o.QueueLimit = 0;
+    });
 });
 
 // --- Auth ------------------------------------------------------------------

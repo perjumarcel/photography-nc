@@ -20,17 +20,19 @@ export function ContactFormContainer(): React.JSX.Element {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
+  const [website, setWebsite] = useState('');
 
   // Clear any prior status when the form is re-mounted (e.g. after navigating away).
   useEffect(() => () => { dispatch(resetContact()); }, [dispatch]);
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
-    const action = await dispatch(sendContactMessage({ name, email, message }));
+    const action = await dispatch(sendContactMessage({ name, email, message, website }));
     if (sendContactMessage.fulfilled.match(action)) {
       setName('');
       setEmail('');
       setMessage('');
+      setWebsite('');
     }
   };
 
@@ -40,9 +42,11 @@ export function ContactFormContainer(): React.JSX.Element {
       name={name}
       email={email}
       message={message}
+      website={website}
       onNameChange={setName}
       onEmailChange={setEmail}
       onMessageChange={setMessage}
+      onWebsiteChange={setWebsite}
       onSubmit={onSubmit}
       status={status}
       error={error}

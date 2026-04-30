@@ -8,9 +8,11 @@ interface ContactFormProps {
   name: string;
   email: string;
   message: string;
+  website: string;
   onNameChange: (value: string) => void;
   onEmailChange: (value: string) => void;
   onMessageChange: (value: string) => void;
+  onWebsiteChange: (value: string) => void;
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
   status: LoadStatus;
   error: string | null;
@@ -21,8 +23,8 @@ interface ContactFormProps {
  * so it can be rendered in tests / Storybook without any Redux wiring.
  */
 export function ContactForm({
-  t, name, email, message,
-  onNameChange, onEmailChange, onMessageChange,
+  t, name, email, message, website,
+  onNameChange, onEmailChange, onMessageChange, onWebsiteChange,
   onSubmit, status, error,
 }: ContactFormProps): React.JSX.Element {
   const isSubmitting = status === 'loading';
@@ -31,6 +33,18 @@ export function ContactForm({
 
   return (
     <form onSubmit={onSubmit} className="space-y-4 md:col-span-2" noValidate>
+      <div className="hidden" aria-hidden="true">
+        <label htmlFor="contact-website">{t('contact.formWebsite')}</label>
+        <input
+          id="contact-website"
+          name="website"
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+          value={website}
+          onChange={(e) => onWebsiteChange(e.target.value)}
+        />
+      </div>
       <div>
         <label htmlFor="contact-name" className="block text-[0.7rem] uppercase tracking-[0.25em] text-paper/70">
           {t('contact.formName')}
@@ -41,6 +55,7 @@ export function ContactForm({
           type="text"
           required
           autoComplete="name"
+          maxLength={128}
           value={name}
           onChange={(e) => onNameChange(e.target.value)}
           disabled={isSubmitting}
@@ -57,6 +72,7 @@ export function ContactForm({
           type="email"
           required
           autoComplete="email"
+          maxLength={256}
           value={email}
           onChange={(e) => onEmailChange(e.target.value)}
           disabled={isSubmitting}
@@ -71,6 +87,7 @@ export function ContactForm({
           id="contact-message"
           name="message"
           required
+          maxLength={4000}
           rows={5}
           value={message}
           onChange={(e) => onMessageChange(e.target.value)}

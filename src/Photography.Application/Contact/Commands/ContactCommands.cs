@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using Photography.Application.Common.Email;
 using Photography.Application.Contact.Dtos;
 using Photography.SharedKernel;
+using System.Net.Mail;
 
 namespace Photography.Application.Contact.Commands;
 
@@ -47,16 +48,19 @@ public sealed class SendContactMessageHandler(
     public async Task<Result> Handle(SendContactMessageCommand request, CancellationToken ct)
     {
         var dto = request.Dto;
-        if (string.IsNullOrWhiteSpace(dto.Name) || dto.Name.Length > MaxNameLength)
-            return Result.Fail("Invalid name");
-        if (string.IsNullOrWhiteSpace(dto.Email) || dto.Email.Length > MaxEmailLength || !dto.Email.Contains('@'))
-            return Result.Fail("Invalid email");
-        if (string.IsNullOrWhiteSpace(dto.Message) || dto.Message.Length > MaxMessageLength)
+        if (!string.IsNullOrWhiteSpace(dto.Website))
             return Result.Fail("Invalid message");
 
-        var name = dto.Name.Trim();
-        var email = dto.Email.Trim();
-        var message = dto.Message.Trim();
+        var name = dto.Name?.Trim();
+        var email = dto.Email?.Trim();
+        var message = dto.Message?.Trim();
+
+        if (string.IsNullOrWhiteSpace(name) || name.Length > MaxNameLength)
+            return Result.Fail("Invalid name");
+        if (string.IsNullOrWhiteSpace(email) || email.Length > MaxEmailLength || !IsValidEmail(email))
+            return Result.Fail("Invalid email");
+        if (string.IsNullOrWhiteSpace(message) || message.Length > MaxMessageLength)
+            return Result.Fail("Invalid message");
 
         logger.LogInformation(
             "Contact message received from {ContactName} <{ContactEmail}>: {ContactMessage}",
@@ -85,5 +89,18 @@ public sealed class SendContactMessageHandler(
         }
 
         return Result.Ok();
+    }
+
+    private static bool IsValidEmail(string email)
+    {
+        try
+        {
+            var parsed = new MailAddress(email);
+            return string.Equals(parsed.Address, email, StringComparison.OrdinalIgnoreCase);
+        }
+        catch (FormatException)
+        {
+            return false;
+        }
     }
 }

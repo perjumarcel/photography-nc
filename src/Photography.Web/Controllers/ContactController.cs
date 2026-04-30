@@ -12,7 +12,7 @@ namespace Photography.Web.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/public/contact")]
-[EnableRateLimiting("general")]
+[EnableRateLimiting("contact")]
 public sealed class ContactController(IMediator mediator) : ControllerBase
 {
     [HttpPost]

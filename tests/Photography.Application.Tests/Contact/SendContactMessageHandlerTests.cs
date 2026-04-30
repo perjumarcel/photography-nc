@@ -34,6 +34,7 @@ public class SendContactMessageHandlerTests
     [Theory]
     [InlineData("", "j@e.com", "msg")]
     [InlineData("Jane", "no-at-symbol", "msg")]
+    [InlineData("Jane", "jane@example.com<script>", "msg")]
     [InlineData("Jane", "j@e.com", "")]
     public async Task Rejects_Invalid_Payloads(string name, string email, string message)
     {
@@ -41,6 +42,19 @@ public class SendContactMessageHandlerTests
             new SendContactMessageCommand(new ContactMessageDto(name, email, message)),
             CancellationToken.None);
         Assert.False(result.Success);
+    }
+
+    [Fact]
+    public async Task Rejects_Honeypot_Submissions_Without_Sending_Email()
+    {
+        var sender = new Mock<IEmailSender>(MockBehavior.Strict);
+        var sut = Build(sender.Object, recipient: "owner@example.com");
+
+        var dto = new ContactMessageDto("Jane", "jane@example.com", "Hi", Website: "https://spam.example");
+        var result = await sut.Handle(new SendContactMessageCommand(dto), CancellationToken.None);
+
+        Assert.False(result.Success);
+        sender.VerifyNoOtherCalls();
     }
 
     [Fact]
@@ -63,7 +77,7 @@ public class SendContactMessageHandlerTests
 
         var sut = Build(sender.Object, recipient: "owner@example.com");
 
-        var dto = new ContactMessageDto("Jane Doe", "jane@example.com", "Need a portrait session.");
+        var dto = new ContactMessageDto("  Jane Doe  ", " jane@example.com ", "  Need a portrait session.  ");
         var result = await sut.Handle(new SendContactMessageCommand(dto), CancellationToken.None);
 
         Assert.True(result.Success);
