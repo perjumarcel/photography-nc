@@ -31,6 +31,7 @@ npm install
 npm run dev      # http://localhost:5173
 npm run build
 npx vitest run
+npm run e2e      # start Vite first; Cypress runs against http://localhost:5173
 ```
 
 ### Migration

@@ -61,6 +61,12 @@ jobs:
           cache: 'npm'
           cache-dependency-path: client/package-lock.json
 
+      - name: Cache Cypress binary
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/Cypress
+          key: cypress-${{ runner.os }}-${{ hashFiles('client/package-lock.json') }}
+
       - name: Install dependencies
         run: npm ci --no-audit --no-fund
 
@@ -69,3 +75,22 @@ jobs:
 
       - name: Test
         run: npx vitest run --reporter=default
+
+      - name: E2E
+        run: |
+          npm run dev -- --host 127.0.0.1 > /tmp/photography-vite.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID"' EXIT
+
+          for attempt in {1..30}; do
+            if curl -fsS http://127.0.0.1:5173 >/dev/null; then
+              break
+            fi
+            if [ "$attempt" -eq 30 ]; then
+              cat /tmp/photography-vite.log
+              exit 1
+            fi
+            sleep 1
+          done
+
+          npm run e2e
