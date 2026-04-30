@@ -2,14 +2,18 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.RateLimiting;
 using HealthChecks.NpgSql;
+using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Photography.Application;
+using Photography.Application.Albums.Queries;
 using Photography.Application.Auth;
+using Photography.Application.Common.Routing;
 using Photography.Infrastructure;
 using Photography.Infrastructure.Persistence;
+using Photography.Web;
 using Photography.Web.Auth;
 using Photography.Web.Middleware;
 using Scalar.AspNetCore;
@@ -132,6 +136,40 @@ app.UseCors(corsPolicyName);
 app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapGet("/sitemap.xml", async (IMediator mediator, HttpRequest request, CancellationToken ct) =>
+{
+    var result = await mediator.Send(new ListAlbumsQuery(PublicOnly: true), ct);
+    if (result.IsFailed)
+        return Results.Problem(result.Error, statusCode: StatusCodes.Status500InternalServerError);
+
+    var origin = $"{request.Scheme}://{request.Host}";
+    return Results.Text(SeoDocuments.BuildSitemapXml(origin, result.Value ?? []), "application/xml", Encoding.UTF8);
+});
+
+app.MapGet("/robots.txt", (HttpRequest request) =>
+{
+    var origin = $"{request.Scheme}://{request.Host}";
+    return Results.Text(SeoDocuments.BuildRobotsTxt(origin), "text/plain", Encoding.UTF8);
+});
+
+var legacyAlbumPatterns = new[]
+{
+    "/Portfolio/Details/{legacyGuid:guid}",
+    "/Portfolio/Details/{legacyGuid:guid}/",
+};
+foreach (var pattern in legacyAlbumPatterns)
+{
+    app.MapGet(pattern, async (Guid legacyGuid, IMediator mediator, CancellationToken ct) =>
+    {
+        var result = await mediator.Send(new GetAlbumByIdQuery(legacyGuid), ct);
+        if (result.IsFailed || result.Value is null)
+            return Results.NotFound();
+
+        return Results.Redirect(LegacyRedirects.AlbumDetailsTarget(result.Value.Slug), permanent: true);
+    });
+}
+
 app.MapControllers();
 
 app.MapHealthChecks("/health");
