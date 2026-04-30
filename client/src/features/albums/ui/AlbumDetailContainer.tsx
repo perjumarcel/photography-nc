@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
-import { fetchAlbumById } from '../api/thunks';
+import { fetchAlbumById, fetchPublicAlbums } from '../api/thunks';
 import { fetchPublicCategories } from '@/features/categories/api/thunks';
 import { clearCurrent } from '../model/albumsSlice';
 import { AlbumDetail } from './AlbumDetail';
@@ -13,16 +13,18 @@ export function AlbumDetailContainer(): React.JSX.Element {
   const { id = '' } = useParams<{ id: string }>();
   const dispatch = useAppDispatch();
   const { current, currentStatus, currentError } = useAppSelector((s) => s.albums);
+  const { list, listStatus } = useAppSelector((s) => s.albums);
   const categories = useAppSelector((s) => s.categories.list);
   const { t } = useTranslation();
 
   useEffect(() => {
     if (id) void dispatch(fetchAlbumById(id));
+    if (listStatus === 'idle') void dispatch(fetchPublicAlbums());
     if (categories.length === 0) void dispatch(fetchPublicCategories());
     return () => {
       dispatch(clearCurrent());
     };
-  }, [dispatch, id, categories.length]);
+  }, [dispatch, id, categories.length, listStatus]);
 
   if (currentStatus === 'loading' || currentStatus === 'idle') {
     return (
@@ -49,6 +51,16 @@ export function AlbumDetailContainer(): React.JSX.Element {
   }
 
   const categoryName = categories.find((c) => c.id === current.categoryId)?.name;
+  const currentIndex = list.findIndex((album) => album.id === current.id);
+  const previousAlbum = currentIndex > 0 ? list[currentIndex - 1] : undefined;
+  const nextAlbum = currentIndex >= 0 && currentIndex < list.length - 1 ? list[currentIndex + 1] : undefined;
 
-  return <AlbumDetail album={current} categoryName={categoryName} />;
+  return (
+    <AlbumDetail
+      album={current}
+      categoryName={categoryName}
+      previousAlbum={previousAlbum && { id: previousAlbum.id, title: previousAlbum.title }}
+      nextAlbum={nextAlbum && { id: nextAlbum.id, title: nextAlbum.title }}
+    />
+  );
 }

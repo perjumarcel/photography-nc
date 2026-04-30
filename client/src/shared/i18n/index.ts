@@ -28,6 +28,7 @@ const resources = {
       'common.next': 'Următorul',
       'common.backToList': 'Înapoi la listă',
       'common.viewAlbum': 'Vezi albumul',
+      'common.close': 'Închide',
 
       'home.kicker': 'Portofoliu',
       'home.title': 'Fotografie cu suflet',
@@ -50,6 +51,7 @@ const resources = {
       'album.client': 'Client',
       'album.location': 'Locație',
       'album.scrollDown': 'Derulează în jos',
+      'album.navigation': 'Navigare între albume',
 
       'about.title': 'Despre mine',
       'about.subtitle':
@@ -139,6 +141,7 @@ const resources = {
       'common.next': 'Next',
       'common.backToList': 'Back to list',
       'common.viewAlbum': 'View album',
+      'common.close': 'Close',
 
       'home.kicker': 'Portfolio',
       'home.title': 'Photography with soul',
@@ -161,6 +164,7 @@ const resources = {
       'album.client': 'Client',
       'album.location': 'Location',
       'album.scrollDown': 'Scroll down',
+      'album.navigation': 'Album navigation',
 
       'about.title': 'About me',
       'about.subtitle':

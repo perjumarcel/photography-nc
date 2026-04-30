@@ -9,6 +9,8 @@ import { PhotoGallery } from './PhotoGallery';
 interface AlbumDetailProps {
   album: AlbumDetailsDto;
   categoryName?: string;
+  previousAlbum?: { id: string; title: string };
+  nextAlbum?: { id: string; title: string };
 }
 
 /**
@@ -18,7 +20,7 @@ interface AlbumDetailProps {
  *  - Image grid that scales from 1 → 2 → 3 columns and varies row span by
  *    image orientation so portraits stay portrait without forced cropping.
  */
-export function AlbumDetail({ album, categoryName }: AlbumDetailProps): React.JSX.Element {
+export function AlbumDetail({ album, categoryName, previousAlbum, nextAlbum }: AlbumDetailProps): React.JSX.Element {
   const { t, i18n } = useTranslation();
   const cover = album.images.find((i) => i.imageType === 1) ?? album.images[0];
   const seoDescription = album.description ?? [categoryName, album.location].filter(Boolean).join(' · ');
@@ -89,12 +91,21 @@ export function AlbumDetail({ album, categoryName }: AlbumDetailProps): React.JS
             </dl>
 
             <div className="pt-4">
-              <Link
-                to="/portfolio"
-                className="text-xs uppercase tracking-[0.25em] text-ink underline-offset-4 hover:underline"
-              >
-                ← {t('common.backToList')}
-              </Link>
+              <div className="flex flex-wrap gap-4 text-xs uppercase tracking-[0.25em] text-ink">
+                {previousAlbum && (
+                  <Link to={`/portfolio/${previousAlbum.id}`} className="underline-offset-4 hover:underline">
+                    ← {t('common.previous')}
+                  </Link>
+                )}
+                <Link to="/portfolio" className="underline-offset-4 hover:underline">
+                  {t('common.backToList')}
+                </Link>
+                {nextAlbum && (
+                  <Link to={`/portfolio/${nextAlbum.id}`} className="underline-offset-4 hover:underline">
+                    {t('common.next')} →
+                  </Link>
+                )}
+              </div>
             </div>
           </aside>
 
@@ -106,6 +117,22 @@ export function AlbumDetail({ album, categoryName }: AlbumDetailProps): React.JS
             )}
           </div>
         </div>
+        {(previousAlbum || nextAlbum) && (
+          <nav aria-label={t('album.navigation')} className="mt-12 flex justify-between gap-4 border-t border-rule pt-6 text-sm">
+            {previousAlbum ? (
+              <Link to={`/portfolio/${previousAlbum.id}`} className="max-w-[45%] text-ink hover:text-brand">
+                <span className="block text-[0.65rem] uppercase tracking-[0.25em] text-ink-muted">{t('common.previous')}</span>
+                <span className="mt-1 block truncate">← {previousAlbum.title}</span>
+              </Link>
+            ) : <span />}
+            {nextAlbum ? (
+              <Link to={`/portfolio/${nextAlbum.id}`} className="max-w-[45%] text-right text-ink hover:text-brand">
+                <span className="block text-[0.65rem] uppercase tracking-[0.25em] text-ink-muted">{t('common.next')}</span>
+                <span className="mt-1 block truncate">{nextAlbum.title} →</span>
+              </Link>
+            ) : <span />}
+          </nav>
+        )}
       </section>
     </article>
   );

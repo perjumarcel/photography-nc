@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ResponsiveImage } from '@/shared/ui/ResponsiveImage';
 import type { ImageDto } from '../model/types';
 
@@ -8,6 +9,7 @@ interface PhotoGalleryProps {
 }
 
 export function PhotoGallery({ images }: PhotoGalleryProps): React.JSX.Element {
+  const { t } = useTranslation();
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const active = activeIndex === null ? null : images[activeIndex];
 
@@ -61,7 +63,7 @@ export function PhotoGallery({ images }: PhotoGalleryProps): React.JSX.Element {
             className="absolute right-4 top-4 rounded-lg px-3 py-2 text-sm uppercase tracking-[0.2em] focus:outline-none focus:ring-2 focus:ring-brand"
             onClick={() => setActiveIndex(null)}
           >
-            Close
+            {t('common.close')}
           </button>
           <button
             type="button"
