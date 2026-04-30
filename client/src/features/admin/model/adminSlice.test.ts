@@ -31,7 +31,15 @@ const image: ImageDto = {
   },
   width: 100, height: 50, orientation: 0, imageType: 0, sizeBytes: 1234,
 };
-const albumDetails: AlbumDetailsDto = { ...album, images: [image] };
+const albumDetails: AlbumDetailsDto = {
+  ...album,
+  coverImageId: image.id,
+  coverPublicUrl: album.coverPublicUrl,
+  coverWidth: album.coverWidth,
+  coverHeight: album.coverHeight,
+  coverVariants: album.coverVariants,
+  images: [image],
+};
 
 describe('adminSlice', () => {
   it('starts idle', () => {

@@ -78,7 +78,7 @@ export function PhotoGallery({ images }: PhotoGalleryProps): React.JSX.Element {
             ‹
           </button>
           <img
-            src={active.variants.full}
+            src={active.variants?.full ?? active.publicUrl}
             alt={active.originalName}
             width={active.width}
             height={active.height}
