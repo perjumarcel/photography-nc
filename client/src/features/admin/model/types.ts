@@ -1,5 +1,4 @@
-import type { LoadStatus, AlbumDto, AlbumDetailsDto } from '@/features/albums/model/types';
-import type { CategoryDto } from '@/features/categories/model/types';
+import type { AlbumDetailsDto, AlbumDto, CategoryDto, LoadStatus } from '@/shared/model/types';
 
 export interface CreateAlbumDto {
   title: string;

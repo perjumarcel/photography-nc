@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { TFunction } from 'i18next';
 import { Button } from '@/shared/ui/Button';
-import type { LoadStatus } from '@/features/albums/model/types';
+import type { LoadStatus } from '@/shared/model/types';
 
 interface ContactFormProps {
   t: TFunction;

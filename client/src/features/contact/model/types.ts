@@ -1,4 +1,4 @@
-import type { LoadStatus } from '@/features/albums/model/types';
+import type { LoadStatus } from '@/shared/model/types';
 
 export interface ContactMessage {
   name: string;

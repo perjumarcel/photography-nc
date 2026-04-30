@@ -4,8 +4,8 @@ import {
   createAdminAlbum, deleteAdminAlbum, fetchAdminAlbums, fetchAdminCategories,
   setAlbumCover, deleteAlbumImage,
 } from '../api/thunks';
-import type { AlbumDto, ImageDto, AlbumDetailsDto } from '@/features/albums/model/types';
-import type { CategoryDto } from '@/features/categories/model/types';
+import type { AlbumDto, ImageDto, AlbumDetailsDto } from '@/shared/model/types';
+import type { CategoryDto } from '@/shared/model/types';
 
 const album: AlbumDto = {
   id: 'a1', title: 'Album 1', showInPortfolio: true, showInStories: false, showInHome: false,

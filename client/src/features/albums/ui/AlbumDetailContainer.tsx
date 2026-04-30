@@ -4,7 +4,7 @@ import { Link, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import { fetchAlbumById, fetchPublicAlbums } from '../api/thunks';
-import { fetchPublicCategories } from '@/features/categories/api/thunks';
+import { fetchPublicCategories } from '@/shared/api/categories';
 import { clearCurrent } from '../model/albumsSlice';
 import { AlbumDetail } from './AlbumDetail';
 

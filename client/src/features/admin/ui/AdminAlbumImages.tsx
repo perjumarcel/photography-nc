@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { ResponsiveImage } from '@/shared/ui/ResponsiveImage';
-import type { ImageDto, LoadStatus } from '@/features/albums/model/types';
+import type { ImageDto, LoadStatus } from '@/shared/model/types';
 import type { UploadQueueItem } from '../lib/useAlbumImageUploadQueue';
 
 interface AdminAlbumImagesProps {
