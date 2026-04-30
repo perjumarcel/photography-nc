@@ -30,6 +30,14 @@ public sealed class PublicController : ControllerBase
         return result.ToActionResult(this);
     }
 
+    /// <summary>Get a single public album by readable slug, with GUID fallback kept above for migrated links.</summary>
+    [HttpGet("albums/{slug}")]
+    public async Task<IActionResult> GetAlbumBySlug(string slug, CancellationToken ct)
+    {
+        var result = await _mediator.Send(new GetAlbumBySlugOrIdQuery(slug), ct);
+        return result.ToActionResult(this);
+    }
+
     [HttpGet("categories")]
     public async Task<IActionResult> ListCategories(CancellationToken ct)
     {
@@ -47,7 +55,7 @@ public sealed class PublicController : ControllerBase
         var origin = $"{Request.Scheme}://{Request.Host}";
         var paths = new List<string> { "/", "/portfolio", "/stories", "/about", "/contact" };
         paths.AddRange((result.Value ?? []).Where(a => a.ShowInPortfolio || a.ShowInStories)
-            .Select(a => $"/portfolio/{a.Id}"));
+            .Select(a => $"/portfolio/{a.Slug}"));
 
         var xml = new StringBuilder();
         xml.AppendLine("""<?xml version="1.0" encoding="UTF-8"?>""");

@@ -101,6 +101,7 @@ public static class DbMigrator
                 id: id,
                 title: rd.GetString(1),
                 categoryId: newCategoryId,
+                slug: CreateSlug(rd.GetString(1), id),
                 description: rd.IsDBNull(2) ? null : rd.GetString(2),
                 eventDate: rd.IsDBNull(3) ? null : DateTime.SpecifyKind(rd.GetDateTime(3), DateTimeKind.Utc),
                 client: rd.IsDBNull(4) ? null : rd.GetString(4),
@@ -118,5 +119,15 @@ public static class DbMigrator
             await db.SaveChangesAsync(ct);
         }
         logger.LogInformation("Albums: copied {Count} (legacy total {Total})", albums.Count, albumIds.Count);
+    }
+
+    private static string CreateSlug(string title, Guid id)
+    {
+        var slug = new string(title.Trim().ToLowerInvariant()
+            .Select(ch => char.IsLetterOrDigit(ch) ? ch : '-')
+            .ToArray());
+        while (slug.Contains("--", StringComparison.Ordinal)) slug = slug.Replace("--", "-", StringComparison.Ordinal);
+        slug = slug.Trim('-');
+        return string.IsNullOrWhiteSpace(slug) ? id.ToString("N") : slug[..Math.Min(slug.Length, Album.MaxSlugLength)];
     }
 }

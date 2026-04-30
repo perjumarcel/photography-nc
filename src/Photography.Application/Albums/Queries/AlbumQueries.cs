@@ -29,7 +29,8 @@ public sealed class ListAlbumsHandler : IRequestHandler<ListAlbumsQuery, Result<
                 var coverUrl = cover is null ? null : _storage.GetPublicUrl(cover.StorageKey);
                 var coverVariants = coverUrl is null ? null : BuildVariants(coverUrl);
                 return new AlbumDto(
-                    a.Id, a.Title, a.Description, a.EventDate, a.Client, a.Location,
+                    a.Id, a.Title, a.Slug, a.Description, a.EventDate, a.Client, a.Location,
+                    a.SeoTitle, a.SeoDescription, a.CoverAltText,
                     a.ShowInPortfolio, a.ShowInStories, a.ShowInHome,
                     a.CategoryId, a.Images.Count, cover?.Id, coverUrl, cover?.Width, cover?.Height, coverVariants);
             })
@@ -41,6 +42,7 @@ public sealed class ListAlbumsHandler : IRequestHandler<ListAlbumsQuery, Result<
 }
 
 public sealed record GetAlbumByIdQuery(Guid Id) : IRequest<Result<AlbumDetailsDto>>;
+public sealed record GetAlbumBySlugOrIdQuery(string SlugOrId) : IRequest<Result<AlbumDetailsDto>>;
 
 public sealed class GetAlbumByIdHandler : IRequestHandler<GetAlbumByIdQuery, Result<AlbumDetailsDto>>
 {
@@ -58,10 +60,39 @@ public sealed class GetAlbumByIdHandler : IRequestHandler<GetAlbumByIdQuery, Res
         var album = await _repo.GetByIdAsync(request.Id, ct);
         if (album is null) return Result<AlbumDetailsDto>.NotFound("Album not found");
 
+        return Result<AlbumDetailsDto>.Ok(AlbumDtoMapper.ToDetails(album, _storage));
+    }
+}
+
+public sealed class GetAlbumBySlugOrIdHandler : IRequestHandler<GetAlbumBySlugOrIdQuery, Result<AlbumDetailsDto>>
+{
+    private readonly IAlbumQueryRepository _repo;
+    private readonly IStorageService _storage;
+
+    public GetAlbumBySlugOrIdHandler(IAlbumQueryRepository repo, IStorageService storage)
+    {
+        _repo = repo;
+        _storage = storage;
+    }
+
+    public async Task<Result<AlbumDetailsDto>> Handle(GetAlbumBySlugOrIdQuery request, CancellationToken ct)
+    {
+        var album = Guid.TryParse(request.SlugOrId, out var id)
+            ? await _repo.GetByIdAsync(id, ct)
+            : await _repo.GetBySlugAsync(request.SlugOrId, ct);
+        if (album is null) return Result<AlbumDetailsDto>.NotFound("Album not found");
+        return Result<AlbumDetailsDto>.Ok(AlbumDtoMapper.ToDetails(album, _storage));
+    }
+}
+
+internal static class AlbumDtoMapper
+{
+    public static AlbumDetailsDto ToDetails(Album album, IStorageService storage)
+    {
         var images = album.Images
             .Select(i =>
             {
-                var publicUrl = _storage.GetPublicUrl(i.StorageKey);
+                var publicUrl = storage.GetPublicUrl(i.StorageKey);
                 return new ImageDto(
                     i.Id, i.AlbumId, i.OriginalName, i.StorageKey,
                     publicUrl, ImageVariantFactory.Build(publicUrl),
@@ -70,13 +101,13 @@ public sealed class GetAlbumByIdHandler : IRequestHandler<GetAlbumByIdQuery, Res
             .ToList();
 
         var cover = album.Images.FirstOrDefault(i => i.ImageType == ImageType.Cover) ?? album.Images.FirstOrDefault();
-        var coverUrl = cover is null ? null : _storage.GetPublicUrl(cover.StorageKey);
+        var coverUrl = cover is null ? null : storage.GetPublicUrl(cover.StorageKey);
         var coverVariants = coverUrl is null ? null : ImageVariantFactory.Build(coverUrl);
-        var dto = new AlbumDetailsDto(
-            album.Id, album.Title, album.Description, album.EventDate, album.Client, album.Location,
+        return new AlbumDetailsDto(
+            album.Id, album.Title, album.Slug, album.Description, album.EventDate, album.Client, album.Location,
+            album.SeoTitle, album.SeoDescription, album.CoverAltText,
             album.ShowInPortfolio, album.ShowInStories, album.ShowInHome,
             album.CategoryId, cover?.Id, coverUrl, cover?.Width, cover?.Height, coverVariants, images);
-        return Result<AlbumDetailsDto>.Ok(dto);
     }
 }
 

@@ -3,10 +3,14 @@ export type LoadStatus = 'idle' | 'loading' | 'succeeded' | 'failed';
 export interface AlbumDto {
   id: string;
   title: string;
+  slug: string;
   description?: string | null;
   eventDate?: string | null;
   client?: string | null;
   location?: string | null;
+  seoTitle?: string | null;
+  seoDescription?: string | null;
+  coverAltText?: string | null;
   showInPortfolio: boolean;
   showInStories: boolean;
   showInHome: boolean;

@@ -10,8 +10,32 @@ public class AlbumDomainTests
     {
         var album = Album.Create(Guid.NewGuid(), "Beach Wedding", categoryId: 1);
         Assert.Equal("Beach Wedding", album.Title);
+        Assert.Equal("beach-wedding", album.Slug);
         Assert.Equal(1, album.CategoryId);
         Assert.Empty(album.Images);
+    }
+
+    [Fact]
+    public void UpdateDetails_NormalizesSlugAndSeoMetadata()
+    {
+        var album = Album.Create(Guid.NewGuid(), "Beach Wedding", categoryId: 1);
+
+        album.UpdateDetails(
+            "New Title",
+            "SEO Friendly Slug",
+            categoryId: 2,
+            description: "Description",
+            eventDate: null,
+            client: null,
+            location: null,
+            seoTitle: "  SEO title  ",
+            seoDescription: "  SEO description  ",
+            coverAltText: "  Cover alt  ");
+
+        Assert.Equal("seo-friendly-slug", album.Slug);
+        Assert.Equal("SEO title", album.SeoTitle);
+        Assert.Equal("SEO description", album.SeoDescription);
+        Assert.Equal("Cover alt", album.CoverAltText);
     }
 
     [Fact]

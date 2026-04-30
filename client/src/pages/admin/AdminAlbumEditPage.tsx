@@ -36,6 +36,7 @@ export function AdminAlbumEditPage(): React.JSX.Element {
   const [form, setForm] = useState({
     title: '', categoryId: 0, description: '',
     eventDate: '', client: '', location: '',
+    slug: '', seoTitle: '', seoDescription: '', coverAltText: '',
     showInPortfolio: false, showInStories: false, showInHome: false,
   });
   const { uploadQueue, uploadFiles } = useAlbumImageUploadQueue(id ?? '');
@@ -53,10 +54,14 @@ export function AdminAlbumEditPage(): React.JSX.Element {
       setForm({
         title: album.title,
         categoryId: album.categoryId,
+        slug: album.slug,
         description: album.description ?? '',
         eventDate: album.eventDate ? album.eventDate.slice(0, 10) : '',
         client: album.client ?? '',
         location: album.location ?? '',
+        seoTitle: album.seoTitle ?? '',
+        seoDescription: album.seoDescription ?? '',
+        coverAltText: album.coverAltText ?? '',
         showInPortfolio: album.showInPortfolio,
         showInStories: album.showInStories,
         showInHome: album.showInHome,
@@ -70,14 +75,18 @@ export function AdminAlbumEditPage(): React.JSX.Element {
     e.preventDefault();
     await dispatch(updateAdminAlbum({
       id,
-      dto: {
-        title: form.title.trim(),
-        categoryId: form.categoryId,
-        description: form.description || null,
-        eventDate: form.eventDate ? new Date(form.eventDate).toISOString() : null,
-        client: form.client || null,
-        location: form.location || null,
-        showInPortfolio: form.showInPortfolio,
+        dto: {
+          title: form.title.trim(),
+          categoryId: form.categoryId,
+          slug: form.slug || null,
+          description: form.description || null,
+          eventDate: form.eventDate ? new Date(form.eventDate).toISOString() : null,
+          client: form.client || null,
+          location: form.location || null,
+          seoTitle: form.seoTitle || null,
+          seoDescription: form.seoDescription || null,
+          coverAltText: form.coverAltText || null,
+          showInPortfolio: form.showInPortfolio,
         showInStories: form.showInStories,
         showInHome: form.showInHome,
       },
@@ -122,6 +131,14 @@ export function AdminAlbumEditPage(): React.JSX.Element {
               {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
             </select>
           </Field>
+          <Field label={t('admin.slug')}>
+            <input
+              type="text" value={form.slug}
+              onChange={(e) => setForm({ ...form, slug: e.target.value })}
+              className={inputCls}
+              placeholder="album-slug"
+            />
+          </Field>
           <Field label={t('admin.eventDate')}>
             <input
               type="date" value={form.eventDate}
@@ -147,6 +164,27 @@ export function AdminAlbumEditPage(): React.JSX.Element {
             <textarea
               rows={4} value={form.description}
               onChange={(e) => setForm({ ...form, description: e.target.value })}
+              className={inputCls}
+            />
+          </Field>
+          <Field label={t('admin.seoTitle')} className="sm:col-span-2">
+            <input
+              type="text" value={form.seoTitle}
+              onChange={(e) => setForm({ ...form, seoTitle: e.target.value })}
+              className={inputCls}
+            />
+          </Field>
+          <Field label={t('admin.seoDescription')} className="sm:col-span-2">
+            <textarea
+              rows={3} value={form.seoDescription}
+              onChange={(e) => setForm({ ...form, seoDescription: e.target.value })}
+              className={inputCls}
+            />
+          </Field>
+          <Field label={t('admin.coverAltText')} className="sm:col-span-2">
+            <input
+              type="text" value={form.coverAltText}
+              onChange={(e) => setForm({ ...form, coverAltText: e.target.value })}
               className={inputCls}
             />
           </Field>

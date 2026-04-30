@@ -18,7 +18,7 @@ interface AlbumCardProps {
  */
 export function AlbumCard({ album, categoryName }: AlbumCardProps): React.JSX.Element {
   const { t } = useTranslation();
-  const href = `/portfolio/${album.id}`;
+  const href = `/portfolio/${album.slug || album.id}`;
 
   return (
     <article

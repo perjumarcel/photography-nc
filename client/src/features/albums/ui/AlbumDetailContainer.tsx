@@ -59,8 +59,8 @@ export function AlbumDetailContainer(): React.JSX.Element {
     <AlbumDetail
       album={current}
       categoryName={categoryName}
-      previousAlbum={previousAlbum && { id: previousAlbum.id, title: previousAlbum.title }}
-      nextAlbum={nextAlbum && { id: nextAlbum.id, title: nextAlbum.title }}
+      previousAlbum={previousAlbum && { id: previousAlbum.slug || previousAlbum.id, title: previousAlbum.title }}
+      nextAlbum={nextAlbum && { id: nextAlbum.slug || nextAlbum.id, title: nextAlbum.title }}
     />
   );
 }

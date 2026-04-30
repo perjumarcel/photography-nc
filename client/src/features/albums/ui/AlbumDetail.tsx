@@ -23,15 +23,16 @@ interface AlbumDetailProps {
 export function AlbumDetail({ album, categoryName, previousAlbum, nextAlbum }: AlbumDetailProps): React.JSX.Element {
   const { t, i18n } = useTranslation();
   const cover = album.images.find((i) => i.imageType === 1) ?? album.images[0];
-  const seoDescription = album.description ?? [categoryName, album.location].filter(Boolean).join(' · ');
+  const seoTitle = album.seoTitle || album.title;
+  const seoDescription = album.seoDescription || album.description || [categoryName, album.location].filter(Boolean).join(' · ');
 
   return (
     <article>
       <Seo
-        title={`${album.title} — ${t('app.title')}`}
+        title={`${seoTitle} — ${t('app.title')}`}
         description={seoDescription || t('portfolio.subtitle')}
         image={album.coverVariants?.hero ?? cover?.variants.hero ?? cover?.publicUrl}
-        canonicalPath={`/portfolio/${album.id}`}
+        canonicalPath={`/portfolio/${album.slug || album.id}`}
       />
       {/* Hero / parallax-style cover */}
       <section
@@ -42,7 +43,7 @@ export function AlbumDetail({ album, categoryName, previousAlbum, nextAlbum }: A
           <ResponsiveImage
             src={cover.publicUrl}
             variants={cover.variants}
-            alt=""
+            alt={album.coverAltText ?? ''}
             width={cover.width}
             height={cover.height}
             sizes="100vw"

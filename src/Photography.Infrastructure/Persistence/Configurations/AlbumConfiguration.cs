@@ -18,9 +18,13 @@ public sealed class AlbumConfiguration : IEntityTypeConfiguration<Album>
         b.Property(x => x.Id).ValueGeneratedNever();
 
         b.Property(x => x.Title).HasMaxLength(Album.MaxTitleLength).IsRequired();
+        b.Property(x => x.Slug).HasMaxLength(Album.MaxSlugLength).IsRequired();
         b.Property(x => x.Description).HasColumnType("text");
         b.Property(x => x.Client).HasMaxLength(Album.MaxClientLength);
         b.Property(x => x.Location).HasMaxLength(Album.MaxLocationLength);
+        b.Property(x => x.SeoTitle).HasMaxLength(Album.MaxSeoTitleLength);
+        b.Property(x => x.SeoDescription).HasMaxLength(Album.MaxSeoDescriptionLength);
+        b.Property(x => x.CoverAltText).HasMaxLength(Album.MaxCoverAltTextLength);
         b.Property(x => x.EventDate);
         b.Property(x => x.ShowInPortfolio).IsRequired();
         b.Property(x => x.ShowInStories).IsRequired();
@@ -30,6 +34,7 @@ public sealed class AlbumConfiguration : IEntityTypeConfiguration<Album>
         b.Property(x => x.UpdatedAtUtc);
 
         b.HasIndex(x => x.CategoryId);
+        b.HasIndex(x => x.Slug).IsUnique();
         b.HasIndex(x => x.ShowInPortfolio);
         b.HasIndex(x => x.ShowInHome);
 

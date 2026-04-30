@@ -70,7 +70,7 @@ export function HomePage(): React.JSX.Element {
                 className="snap-start"
               >
                 <Link
-                  to={`/portfolio/${album.id}`}
+                  to={`/portfolio/${album.slug || album.id}`}
                   className="group relative block h-[60vh] min-h-[320px] w-[80vw] overflow-hidden bg-paper-soft sm:w-[55vw] md:w-[40vw] lg:w-[30vw]"
                   aria-label={album.title}
                 >

@@ -6,6 +6,10 @@ import type { AlbumDto } from './types';
 const sample: AlbumDto = {
   id: '00000000-0000-0000-0000-000000000001',
   title: 'Sample',
+  slug: 'sample',
+  seoTitle: 'Sample SEO',
+  seoDescription: 'Sample SEO description',
+  coverAltText: 'Sample cover',
   showInPortfolio: true,
   showInStories: false,
   showInHome: false,

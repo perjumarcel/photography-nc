@@ -9,6 +9,7 @@ import type { CategoryDto } from '@/features/categories/model/types';
 
 const album: AlbumDto = {
   id: 'a1', title: 'Album 1', showInPortfolio: true, showInStories: false, showInHome: false,
+  slug: 'album-1', seoTitle: 'Album SEO', seoDescription: 'Album SEO description', coverAltText: 'Album cover',
   categoryId: 1, imageCount: 0, coverPublicUrl: '/cover.jpg', coverWidth: 100, coverHeight: 50,
   coverVariants: {
     placeholder: '/cover.jpg?width=40',
