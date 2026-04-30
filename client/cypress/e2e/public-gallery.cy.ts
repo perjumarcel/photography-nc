@@ -1,6 +1,13 @@
 import { testIds } from '../../src/shared/lib/testIds';
 
 const imageUrl = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
+const imageVariants = {
+  placeholder: imageUrl,
+  thumbnail: imageUrl,
+  card: imageUrl,
+  hero: imageUrl,
+  full: imageUrl,
+};
 
 const albums = [
   {
@@ -13,6 +20,7 @@ const albums = [
     showInHome: true,
     imageCount: 2,
     coverPublicUrl: imageUrl,
+    coverVariants: imageVariants,
     coverWidth: 1200,
     coverHeight: 800,
   },
@@ -26,6 +34,7 @@ const albums = [
     showInHome: false,
     imageCount: 1,
     coverPublicUrl: imageUrl,
+    coverVariants: imageVariants,
     coverWidth: 1200,
     coverHeight: 800,
   },
@@ -35,8 +44,6 @@ const categories = [
   { id: 1, name: 'Weddings', slug: 'weddings', displayOrder: 1, showAsFilter: true },
   { id: 2, name: 'Portraits', slug: 'portraits', displayOrder: 2, showAsFilter: true },
 ];
-
-const byTestId = (testId: string): Cypress.Chainable<JQuery<HTMLElement>> => cy.get(`[data-testid="${testId}"]`);
 
 describe('public gallery', () => {
   beforeEach(() => {
@@ -52,6 +59,7 @@ describe('public gallery', () => {
           originalName: 'summer-1.jpg',
           storageKey: 'albums/111/images/a.jpg',
           publicUrl: imageUrl,
+          variants: imageVariants,
           width: 1200,
           height: 800,
           orientation: 1,
@@ -66,15 +74,15 @@ describe('public gallery', () => {
     cy.visit('/portfolio');
     cy.wait(['@categories', '@albums']);
 
-    byTestId(testIds.album.list).within(() => {
-      byTestId(testIds.album.card).should('have.length', 2);
+    cy.byTestId(testIds.album.list).within(() => {
+      cy.byTestId(testIds.album.card).should('have.length', 2);
       cy.contains('Summer Wedding').should('be.visible');
       cy.contains('Studio Portraits').should('be.visible');
     });
 
-    byTestId(testIds.category.list).contains('Weddings').click();
-    byTestId(testIds.album.list).within(() => {
-      byTestId(testIds.album.card).should('have.length', 1);
+    cy.byTestId(testIds.category.list).contains('Weddings').click();
+    cy.byTestId(testIds.album.list).within(() => {
+      cy.byTestId(testIds.album.card).should('have.length', 1);
       cy.contains('Summer Wedding').should('be.visible');
       cy.contains('Studio Portraits').should('not.exist');
     });
