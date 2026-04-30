@@ -76,7 +76,7 @@ export function ResponsiveImage({
 function createPlaceholderStyle(url: string): React.CSSProperties | undefined {
   if (!isSafeImageUrl(url)) return undefined;
   return {
-    backgroundImage: `url(${JSON.stringify(url)})`,
+    backgroundImage: `url("${url}")`,
     backgroundSize: 'cover',
     backgroundPosition: 'center',
   };

@@ -118,7 +118,7 @@ export function AdminAlbumsPage(): React.JSX.Element {
                     <ResponsiveImage
                       src={a.coverPublicUrl}
                       variants={a.coverVariants}
-                      alt=""
+                      alt={`Cover image for ${a.title}`}
                       width={a.coverWidth}
                       height={a.coverHeight}
                       sizes="96px"

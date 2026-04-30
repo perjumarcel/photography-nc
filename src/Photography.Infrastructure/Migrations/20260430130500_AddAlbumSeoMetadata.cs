@@ -7,6 +7,10 @@ namespace Photography.Infrastructure.Migrations
     /// <inheritdoc />
     public partial class AddAlbumSeoMetadata : Migration
     {
+        private const int SlugMaxLength = 96;
+        private const int SlugSuffixLength = 9; // '-' plus the first 8 hex chars from the album ID.
+        private const int MaxBaseSlugLength = SlugMaxLength - SlugSuffixLength;
+
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -39,13 +43,13 @@ namespace Photography.Infrastructure.Migrations
                 nullable: false,
                 defaultValue: "");
 
-            migrationBuilder.Sql("""
+            migrationBuilder.Sql($"""
                 UPDATE albums
                 SET "Slug" = lower(
                     concat(
                         left(
                             coalesce(nullif(trim(both '-' from regexp_replace("Title", '[^a-zA-Z0-9]+', '-', 'g')), ''), 'album'),
-                            87
+                            {MaxBaseSlugLength}
                         ),
                         '-',
                         left(replace("Id"::text, '-', ''), 8)

@@ -6,9 +6,10 @@ import type { ImageDto } from '../model/types';
 
 interface PhotoGalleryProps {
   images: ImageDto[];
+  albumTitle?: string;
 }
 
-export function PhotoGallery({ images }: PhotoGalleryProps): React.JSX.Element {
+export function PhotoGallery({ images, albumTitle }: PhotoGalleryProps): React.JSX.Element {
   const { t } = useTranslation();
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const active = activeIndex === null ? null : images[activeIndex];
@@ -38,10 +39,10 @@ export function PhotoGallery({ images }: PhotoGalleryProps): React.JSX.Element {
               onClick={() => setActiveIndex(index)}
               className="group block w-full text-left focus:outline-none focus:ring-2 focus:ring-brand"
             >
-              <ResponsiveImage
-                src={img.publicUrl}
-                variants={img.variants}
-                alt={img.originalName}
+                <ResponsiveImage
+                  src={img.publicUrl}
+                  variants={img.variants}
+                  alt={albumTitle ? `${albumTitle} ${index + 1}` : ''}
                 width={img.width}
                 height={img.height}
                 sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
@@ -83,7 +84,7 @@ export function PhotoGallery({ images }: PhotoGalleryProps): React.JSX.Element {
           </button>
           <img
             src={active.variants?.full ?? active.publicUrl}
-            alt={active.originalName}
+            alt={albumTitle && activeIndex !== null ? `${albumTitle} ${activeIndex + 1}` : ''}
             width={active.width}
             height={active.height}
             className="max-h-[88vh] max-w-[90vw] object-contain"

@@ -115,7 +115,7 @@ export function AlbumDetail({ album, categoryName, previousAlbum, nextAlbum }: A
             {album.images.length === 0 ? (
               <p className="text-ink-muted">{t('common.empty')}</p>
             ) : (
-              <PhotoGallery images={album.images} />
+              <PhotoGallery images={album.images} albumTitle={album.title} />
             )}
           </div>
         </div>

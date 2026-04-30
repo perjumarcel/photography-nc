@@ -5,6 +5,7 @@ import { describe, expect, it } from 'vitest';
 
 const sourceRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const importPattern = /(?:import|export)\s+(?:type\s+)?(?:[^'"]*?\s+from\s+)?['"]([^'"]+)['"]|import\(\s*['"]([^'"]+)['"]\s*\)/g;
+const ignoredDirectories = new Set(['node_modules', 'dist', '.vite', 'coverage']);
 
 describe('feature-sliced import boundaries', () => {
   it('keeps shared independent from features and pages', () => {
@@ -34,6 +35,7 @@ describe('feature-sliced import boundaries', () => {
 function collectSourceFiles(directory: string): string[] {
   return fs.readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
     const fullPath = path.join(directory, entry.name);
+    if (entry.isDirectory() && ignoredDirectories.has(entry.name)) return [];
     if (entry.isDirectory()) return collectSourceFiles(fullPath);
     return /\.(ts|tsx)$/.test(entry.name) ? [fullPath] : [];
   });
