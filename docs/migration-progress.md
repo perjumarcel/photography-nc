@@ -77,7 +77,8 @@ detail belongs in `docs/architecture/` or `docs/operations/`.
 - [ ] Premium editorial visual pass (typography, palette, spacing) per
   problem-statement design direction
 - [ ] Album-detail storytelling layout + mid-gallery CTA + related albums
-- [ ] Contact page direct-action buttons (Call/WhatsApp/Email/Instagram)
+- [x] Contact page direct-action buttons (Call/WhatsApp/Email/Instagram)
+  and premium inquiry fields (phone, event/session type, date, venue, budget)
 - [ ] SSR or static prerender for public marketing pages
   (currently CSR — flagged as SEO risk)
 - [ ] Per-page meta/OG tags + canonical URLs from API site-settings
@@ -96,7 +97,7 @@ detail belongs in `docs/architecture/` or `docs/operations/`.
 - [x] JWT-based admin auth + refresh
 - [x] CORS policy in `Program.cs`
 - [x] Rate limiter registered on the API pipeline
-- [ ] Honeypot / spam protection on inquiry form
+- [x] Honeypot / spam protection on inquiry form
 - [ ] Confirm secure-headers middleware (HSTS, X-Content-Type-Options, CSP)
 
 ## 8. Testing
@@ -129,6 +130,10 @@ detail belongs in `docs/architecture/` or `docs/operations/`.
 - Cypress album-detail intercept now derives slug from fixture
   (`client/cypress/e2e/public-gallery.cy.ts`)
 - This progress tracker (`docs/migration-progress.md`)
+- Contact inquiry form now captures premium-client planning metadata and
+  exposes direct Call / WhatsApp / Email / Instagram actions
+  (`ContactMessageDto`, `SendContactMessageHandler`, `ContactPage.tsx`,
+  `ContactForm.tsx`)
 
 ## Validation commands
 

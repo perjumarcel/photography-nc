@@ -4,6 +4,12 @@ export interface ContactMessage {
   name: string;
   email: string;
   message: string;
+  phone?: string;
+  eventType?: string;
+  preferredDate?: string;
+  venue?: string;
+  estimatedBudgetRange?: string;
+  sourcePage?: string;
   website?: string;
 }
 

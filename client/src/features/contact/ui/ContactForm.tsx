@@ -7,10 +7,20 @@ interface ContactFormProps {
   t: TFunction;
   name: string;
   email: string;
+  phone: string;
+  eventType: string;
+  preferredDate: string;
+  venue: string;
+  estimatedBudgetRange: string;
   message: string;
   website: string;
   onNameChange: (value: string) => void;
   onEmailChange: (value: string) => void;
+  onPhoneChange: (value: string) => void;
+  onEventTypeChange: (value: string) => void;
+  onPreferredDateChange: (value: string) => void;
+  onVenueChange: (value: string) => void;
+  onEstimatedBudgetRangeChange: (value: string) => void;
   onMessageChange: (value: string) => void;
   onWebsiteChange: (value: string) => void;
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
@@ -23,8 +33,9 @@ interface ContactFormProps {
  * so it can be rendered in tests / Storybook without any Redux wiring.
  */
 export function ContactForm({
-  t, name, email, message, website,
-  onNameChange, onEmailChange, onMessageChange, onWebsiteChange,
+  t, name, email, phone, eventType, preferredDate, venue, estimatedBudgetRange, message, website,
+  onNameChange, onEmailChange, onPhoneChange, onEventTypeChange, onPreferredDateChange,
+  onVenueChange, onEstimatedBudgetRangeChange, onMessageChange, onWebsiteChange,
   onSubmit, status, error,
 }: ContactFormProps): React.JSX.Element {
   const isSubmitting = status === 'loading';
@@ -45,40 +56,29 @@ export function ContactForm({
           onChange={(e) => onWebsiteChange(e.target.value)}
         />
       </div>
-      <div>
-        <label htmlFor="contact-name" className="block text-[0.7rem] uppercase tracking-[0.25em] text-paper/70">
-          {t('contact.formName')}
-        </label>
-        <input
-          id="contact-name"
-          name="name"
-          type="text"
-          required
-          autoComplete="name"
-          maxLength={128}
-          value={name}
-          onChange={(e) => onNameChange(e.target.value)}
-          disabled={isSubmitting}
-          className="mt-2 w-full border-b border-paper/30 bg-transparent py-3 text-paper placeholder-paper/40 focus:border-brand focus:outline-none disabled:opacity-60"
-        />
+      <div className="grid gap-4 sm:grid-cols-2">
+        <ContactInput id="contact-name" name="name" label={t('contact.formName')} value={name}
+          onChange={onNameChange} disabled={isSubmitting} required autoComplete="name" maxLength={128} />
+        <ContactInput id="contact-email" name="email" label={t('contact.formEmail')} value={email}
+          onChange={onEmailChange} disabled={isSubmitting} required type="email" autoComplete="email" maxLength={256} />
+        <ContactInput id="contact-phone" name="phone" label={t('contact.formPhone')} value={phone}
+          onChange={onPhoneChange} disabled={isSubmitting} type="tel" autoComplete="tel" maxLength={64} />
+        <ContactInput id="contact-event-type" name="eventType" label={t('contact.formEventType')} value={eventType}
+          onChange={onEventTypeChange} disabled={isSubmitting} autoComplete="off" maxLength={256} />
+        <ContactInput id="contact-date" name="preferredDate" label={t('contact.formPreferredDate')} value={preferredDate}
+          onChange={onPreferredDateChange} disabled={isSubmitting} type="date" maxLength={256} />
+        <ContactInput id="contact-venue" name="venue" label={t('contact.formVenue')} value={venue}
+          onChange={onVenueChange} disabled={isSubmitting} autoComplete="street-address" maxLength={256} />
       </div>
-      <div>
-        <label htmlFor="contact-email" className="block text-[0.7rem] uppercase tracking-[0.25em] text-paper/70">
-          {t('contact.formEmail')}
-        </label>
-        <input
-          id="contact-email"
-          name="email"
-          type="email"
-          required
-          autoComplete="email"
-          maxLength={256}
-          value={email}
-          onChange={(e) => onEmailChange(e.target.value)}
-          disabled={isSubmitting}
-          className="mt-2 w-full border-b border-paper/30 bg-transparent py-3 text-paper placeholder-paper/40 focus:border-brand focus:outline-none disabled:opacity-60"
-        />
-      </div>
+      <ContactInput
+        id="contact-budget"
+        name="estimatedBudgetRange"
+        label={t('contact.formBudget')}
+        value={estimatedBudgetRange}
+        onChange={onEstimatedBudgetRangeChange}
+        disabled={isSubmitting}
+        maxLength={256}
+      />
       <div>
         <label htmlFor="contact-message" className="block text-[0.7rem] uppercase tracking-[0.25em] text-paper/70">
           {t('contact.formMessage')}
@@ -116,5 +116,42 @@ export function ContactForm({
         {t('contact.formSubmit')}
       </Button>
     </form>
+  );
+}
+
+interface ContactInputProps {
+  id: string;
+  name: string;
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  disabled: boolean;
+  required?: boolean;
+  type?: React.HTMLInputTypeAttribute;
+  autoComplete?: string;
+  maxLength?: number;
+}
+
+function ContactInput({
+  id, name, label, value, onChange, disabled, required = false, type = 'text', autoComplete, maxLength,
+}: ContactInputProps): React.JSX.Element {
+  return (
+    <div>
+      <label htmlFor={id} className="block text-[0.7rem] uppercase tracking-[0.25em] text-paper/70">
+        {label}
+      </label>
+      <input
+        id={id}
+        name={name}
+        type={type}
+        required={required}
+        autoComplete={autoComplete}
+        maxLength={maxLength}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        disabled={disabled}
+        className="mt-2 w-full border-b border-paper/30 bg-transparent py-3 text-paper placeholder-paper/40 focus:border-brand focus:outline-none disabled:opacity-60"
+      />
+    </div>
   );
 }

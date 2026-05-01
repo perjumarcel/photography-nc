@@ -5,7 +5,8 @@ import type { ContactMessage } from '../model/types';
 
 /**
  * POSTs a public contact form submission to the backend. The endpoint accepts
- * `{ name, email, message }` and returns `204 No Content` on success.
+ * `{ name, email, phone, eventType, preferredDate, venue, estimatedBudgetRange, message }`
+ * and returns `204 No Content` on success.
  */
 export const sendContactMessage = createAsyncThunk<void, ContactMessage, { rejectValue: string }>(
   'contact/send',

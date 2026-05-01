@@ -19,6 +19,11 @@ export function ContactFormContainer(): React.JSX.Element {
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [eventType, setEventType] = useState('');
+  const [preferredDate, setPreferredDate] = useState('');
+  const [venue, setVenue] = useState('');
+  const [estimatedBudgetRange, setEstimatedBudgetRange] = useState('');
   const [message, setMessage] = useState('');
   const [website, setWebsite] = useState('');
 
@@ -27,10 +32,26 @@ export function ContactFormContainer(): React.JSX.Element {
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
-    const action = await dispatch(sendContactMessage({ name, email, message, website }));
+    const action = await dispatch(sendContactMessage({
+      name,
+      email,
+      phone,
+      eventType,
+      preferredDate,
+      venue,
+      estimatedBudgetRange,
+      message,
+      sourcePage: window.location.pathname,
+      website,
+    }));
     if (sendContactMessage.fulfilled.match(action)) {
       setName('');
       setEmail('');
+      setPhone('');
+      setEventType('');
+      setPreferredDate('');
+      setVenue('');
+      setEstimatedBudgetRange('');
       setMessage('');
       setWebsite('');
     }
@@ -41,10 +62,20 @@ export function ContactFormContainer(): React.JSX.Element {
       t={t}
       name={name}
       email={email}
+      phone={phone}
+      eventType={eventType}
+      preferredDate={preferredDate}
+      venue={venue}
+      estimatedBudgetRange={estimatedBudgetRange}
       message={message}
       website={website}
       onNameChange={setName}
       onEmailChange={setEmail}
+      onPhoneChange={setPhone}
+      onEventTypeChange={setEventType}
+      onPreferredDateChange={setPreferredDate}
+      onVenueChange={setVenue}
+      onEstimatedBudgetRangeChange={setEstimatedBudgetRange}
       onMessageChange={setMessage}
       onWebsiteChange={setWebsite}
       onSubmit={onSubmit}

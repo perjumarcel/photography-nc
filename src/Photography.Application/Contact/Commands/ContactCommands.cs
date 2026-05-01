@@ -41,6 +41,8 @@ public sealed class SendContactMessageHandler(
 {
     private const int MaxNameLength = 128;
     private const int MaxEmailLength = 256;
+    private const int MaxPhoneLength = 64;
+    private const int MaxMetadataLength = 256;
     private const int MaxMessageLength = 4000;
 
     private readonly ContactOptions _contact = contactOptions.Value;
@@ -53,18 +55,29 @@ public sealed class SendContactMessageHandler(
 
         var name = dto.Name?.Trim();
         var email = dto.Email?.Trim();
+        var phone = Normalize(dto.Phone);
+        var eventType = Normalize(dto.EventType);
+        var preferredDate = Normalize(dto.PreferredDate);
+        var venue = Normalize(dto.Venue);
+        var budget = Normalize(dto.EstimatedBudgetRange);
+        var sourcePage = Normalize(dto.SourcePage);
         var message = dto.Message?.Trim();
 
         if (string.IsNullOrWhiteSpace(name) || name.Length > MaxNameLength)
             return Result.Fail("Invalid name");
         if (string.IsNullOrWhiteSpace(email) || email.Length > MaxEmailLength || !IsValidEmail(email))
             return Result.Fail("Invalid email");
+        if (phone is { Length: > MaxPhoneLength })
+            return Result.Fail("Invalid phone");
+        if (!IsValidMetadata(eventType) || !IsValidMetadata(preferredDate) || !IsValidMetadata(venue) ||
+            !IsValidMetadata(budget) || !IsValidMetadata(sourcePage))
+            return Result.Fail("Invalid message details");
         if (string.IsNullOrWhiteSpace(message) || message.Length > MaxMessageLength)
             return Result.Fail("Invalid message");
 
         logger.LogInformation(
-            "Contact message received from {ContactName} <{ContactEmail}>: {ContactMessage}",
-            name, email, message);
+            "Contact message received from {ContactName} <{ContactEmail}>. Phone: {ContactPhone}. Event: {EventType}. PreferredDate: {PreferredDate}. Venue: {Venue}. Budget: {Budget}. Source: {SourcePage}. Message: {ContactMessage}",
+            name, email, phone, eventType, preferredDate, venue, budget, sourcePage, message);
 
         var recipient = _contact.NotificationRecipient;
         if (!string.IsNullOrWhiteSpace(recipient))
@@ -72,6 +85,12 @@ public sealed class SendContactMessageHandler(
             var subject = $"Contact form: {name}";
             var body =
                 $"From: {name} <{email}>{Environment.NewLine}" +
+                FormatLine("Phone", phone) +
+                FormatLine("Event/session type", eventType) +
+                FormatLine("Preferred date", preferredDate) +
+                FormatLine("Venue/location", venue) +
+                FormatLine("Estimated budget", budget) +
+                FormatLine("Source page", sourcePage) +
                 $"{Environment.NewLine}" +
                 message;
 
@@ -103,4 +122,13 @@ public sealed class SendContactMessageHandler(
             return false;
         }
     }
+
+    private static string? Normalize(string? value)
+        => string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+
+    private static bool IsValidMetadata(string? value)
+        => value is null || value.Length <= MaxMetadataLength;
+
+    private static string FormatLine(string label, string? value)
+        => string.IsNullOrWhiteSpace(value) ? string.Empty : $"{label}: {value}{Environment.NewLine}";
 }

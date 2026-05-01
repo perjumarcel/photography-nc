@@ -77,7 +77,16 @@ public class SendContactMessageHandlerTests
 
         var sut = Build(sender.Object, recipient: "owner@example.com");
 
-        var dto = new ContactMessageDto("  Jane Doe  ", " jane@example.com ", "  Need a portrait session.  ");
+        var dto = new ContactMessageDto(
+            "  Jane Doe  ",
+            " jane@example.com ",
+            "  Need a portrait session.  ",
+            Phone: " +373 68 538 087 ",
+            EventType: "Portrait",
+            PreferredDate: "2026-06-20",
+            Venue: "Chisinau",
+            EstimatedBudgetRange: "Premium collection",
+            SourcePage: "/contact");
         var result = await sut.Handle(new SendContactMessageCommand(dto), CancellationToken.None);
 
         Assert.True(result.Success);
@@ -86,8 +95,24 @@ public class SendContactMessageHandlerTests
                 m.To == "owner@example.com" &&
                 m.ReplyTo == "jane@example.com" &&
                 m.Subject.Contains("Jane Doe") &&
+                m.Body.Contains("+373 68 538 087") &&
+                m.Body.Contains("Portrait") &&
+                m.Body.Contains("2026-06-20") &&
+                m.Body.Contains("Chisinau") &&
+                m.Body.Contains("Premium collection") &&
+                m.Body.Contains("/contact") &&
                 m.Body.Contains("Need a portrait session.")),
             It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task Rejects_Oversized_Metadata()
+    {
+        var huge = new string('x', 300);
+        var result = await Build().Handle(
+            new SendContactMessageCommand(new ContactMessageDto("Jane", "jane@example.com", "Hi", Venue: huge)),
+            CancellationToken.None);
+        Assert.False(result.Success);
     }
 
     [Fact]
