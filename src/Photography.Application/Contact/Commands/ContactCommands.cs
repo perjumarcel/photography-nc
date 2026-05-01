@@ -5,6 +5,7 @@ using Photography.Application.Common.Email;
 using Photography.Application.Contact.Dtos;
 using Photography.SharedKernel;
 using System.Net.Mail;
+using System.Text.RegularExpressions;
 
 namespace Photography.Application.Contact.Commands;
 
@@ -44,6 +45,9 @@ public sealed class SendContactMessageHandler(
     private const int MaxPhoneLength = 64;
     private const int MaxMetadataLength = 256;
     private const int MaxMessageLength = 4000;
+    private static readonly Regex ConservativeEmailPattern = new(
+        @"^[^@\s<>()""\\,;:]+@[^@\s<>()""\\,;:]+\.[^@\s<>()""\\,;:]+$",
+        RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
     private readonly ContactOptions _contact = contactOptions.Value;
 
@@ -112,6 +116,9 @@ public sealed class SendContactMessageHandler(
 
     private static bool IsValidEmail(string email)
     {
+        if (!ConservativeEmailPattern.IsMatch(email))
+            return false;
+
         try
         {
             var parsed = new MailAddress(email);
