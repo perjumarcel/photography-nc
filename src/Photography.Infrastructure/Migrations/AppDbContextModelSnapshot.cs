@@ -38,6 +38,10 @@ namespace Photography.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAtUtc")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("CoverAltText")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
@@ -45,6 +49,14 @@ namespace Photography.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Location")
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<string>("SeoDescription")
+                        .HasMaxLength(320)
+                        .HasColumnType("character varying(320)");
+
+                    b.Property<string>("SeoTitle")
                         .HasMaxLength(128)
                         .HasColumnType("character varying(128)");
 
@@ -57,6 +69,11 @@ namespace Photography.Infrastructure.Migrations
                     b.Property<bool>("ShowInStories")
                         .HasColumnType("boolean");
 
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasMaxLength(96)
+                        .HasColumnType("character varying(96)");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(64)
@@ -68,6 +85,9 @@ namespace Photography.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
+
+                    b.HasIndex("Slug")
+                        .IsUnique();
 
                     b.HasIndex("ShowInHome");
 

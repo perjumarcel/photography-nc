@@ -1,4 +1,4 @@
-import type { LoadStatus } from '@/features/albums/model/types';
+import type { LoadStatus } from '@/shared/model/types';
 
 /** Backend response payload from `/api/auth/login` and `/api/auth/refresh`. */
 export interface AuthTokens {

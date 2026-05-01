@@ -6,11 +6,25 @@ import type { AlbumDto } from './types';
 const sample: AlbumDto = {
   id: '00000000-0000-0000-0000-000000000001',
   title: 'Sample',
+  slug: 'sample',
+  seoTitle: 'Sample SEO',
+  seoDescription: 'Sample SEO description',
+  coverAltText: 'Sample cover',
   showInPortfolio: true,
   showInStories: false,
   showInHome: false,
   categoryId: 1,
   imageCount: 0,
+  coverPublicUrl: '/cover.jpg',
+  coverWidth: 100,
+  coverHeight: 80,
+  coverVariants: {
+    placeholder: '/cover.jpg?width=40',
+    thumbnail: '/cover.jpg?width=240',
+    card: '/cover.jpg?width=640',
+    hero: '/cover.jpg?width=1600',
+    full: '/cover.jpg',
+  },
 };
 
 describe('albumsSlice', () => {

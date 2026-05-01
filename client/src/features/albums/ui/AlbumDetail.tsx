@@ -1,11 +1,16 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { ResponsiveImage } from '@/shared/ui/ResponsiveImage';
+import { Seo } from '@/shared/ui/Seo';
 import type { AlbumDetailsDto } from '../model/types';
+import { PhotoGallery } from './PhotoGallery';
 
 interface AlbumDetailProps {
   album: AlbumDetailsDto;
   categoryName?: string;
+  previousAlbum?: { id: string; title: string };
+  nextAlbum?: { id: string; title: string };
 }
 
 /**
@@ -15,24 +20,38 @@ interface AlbumDetailProps {
  *  - Image grid that scales from 1 → 2 → 3 columns and varies row span by
  *    image orientation so portraits stay portrait without forced cropping.
  */
-export function AlbumDetail({ album, categoryName }: AlbumDetailProps): React.JSX.Element {
+export function AlbumDetail({ album, categoryName, previousAlbum, nextAlbum }: AlbumDetailProps): React.JSX.Element {
   const { t, i18n } = useTranslation();
   const cover = album.images.find((i) => i.imageType === 1) ?? album.images[0];
+  const seoTitle = album.seoTitle || album.title;
+  const metadataDescription = [categoryName, album.location].filter(Boolean).join(' · ');
+  const seoDescription = album.seoDescription || album.description || metadataDescription || t('portfolio.subtitle');
 
   return (
     <article>
+      <Seo
+        title={`${seoTitle} — ${t('app.title')}`}
+        description={seoDescription}
+        image={album.coverVariants?.hero ?? cover?.variants.hero ?? cover?.publicUrl}
+        canonicalPath={`/portfolio/${album.slug || album.id}`}
+      />
       {/* Hero / parallax-style cover */}
       <section
         className="relative flex h-[60vh] min-h-[360px] w-full items-end overflow-hidden bg-ink-soft text-paper"
         aria-labelledby="album-title"
       >
         {cover && (
-          <img
+          <ResponsiveImage
             src={cover.publicUrl}
-            alt=""
-            aria-hidden="true"
-            className="absolute inset-0 h-full w-full object-cover opacity-70"
+            variants={cover.variants}
+            alt={album.coverAltText ?? ''}
+            width={cover.width}
+            height={cover.height}
+            sizes="100vw"
+            className="absolute inset-0 h-full w-full"
+            imgClassName="opacity-70"
             loading="eager"
+            fetchPriority="high"
           />
         )}
         <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/30 to-transparent" />
@@ -74,12 +93,21 @@ export function AlbumDetail({ album, categoryName }: AlbumDetailProps): React.JS
             </dl>
 
             <div className="pt-4">
-              <Link
-                to="/portfolio"
-                className="text-xs uppercase tracking-[0.25em] text-ink underline-offset-4 hover:underline"
-              >
-                ← {t('common.backToList')}
-              </Link>
+              <div className="flex flex-wrap gap-4 text-xs uppercase tracking-[0.25em] text-ink">
+                {previousAlbum && (
+                  <Link to={`/portfolio/${previousAlbum.id}`} className="underline-offset-4 hover:underline">
+                    ← {t('common.previous')}
+                  </Link>
+                )}
+                <Link to="/portfolio" className="underline-offset-4 hover:underline">
+                  {t('common.backToList')}
+                </Link>
+                {nextAlbum && (
+                  <Link to={`/portfolio/${nextAlbum.id}`} className="underline-offset-4 hover:underline">
+                    {t('common.next')} →
+                  </Link>
+                )}
+              </div>
             </div>
           </aside>
 
@@ -87,35 +115,26 @@ export function AlbumDetail({ album, categoryName }: AlbumDetailProps): React.JS
             {album.images.length === 0 ? (
               <p className="text-ink-muted">{t('common.empty')}</p>
             ) : (
-              <ul className="grid auto-rows-[180px] grid-cols-2 gap-3 sm:auto-rows-[220px] md:grid-cols-3">
-                {album.images.map((img) => {
-                  // Orientation: 0 = vertical → tall card; 1 = horizontal → wide card.
-                  const tall = img.orientation === 0;
-                  return (
-                    <li
-                      key={img.id}
-                      className={
-                        tall ? 'row-span-2' : 'col-span-2 sm:col-span-1 md:col-span-2'
-                      }
-                    >
-                      <figure className="h-full w-full overflow-hidden bg-paper-soft">
-                        <img
-                          src={img.publicUrl}
-                          alt={img.originalName}
-                          loading="lazy"
-                          decoding="async"
-                          className="h-full w-full object-cover transition-transform duration-700 hover:scale-[1.02]"
-                          width={img.width}
-                          height={img.height}
-                        />
-                      </figure>
-                    </li>
-                  );
-                })}
-              </ul>
+              <PhotoGallery images={album.images} albumTitle={album.title} />
             )}
           </div>
         </div>
+        {(previousAlbum || nextAlbum) && (
+          <nav aria-label={t('album.navigation')} className="mt-12 flex justify-between gap-4 border-t border-rule pt-6 text-sm">
+            {previousAlbum ? (
+              <Link to={`/portfolio/${previousAlbum.id}`} className="max-w-[45%] text-ink hover:text-brand">
+                <span className="block text-[0.65rem] uppercase tracking-[0.25em] text-ink-muted">{t('common.previous')}</span>
+                <span className="mt-1 block truncate">← {previousAlbum.title}</span>
+              </Link>
+            ) : <span />}
+            {nextAlbum ? (
+              <Link to={`/portfolio/${nextAlbum.id}`} className="max-w-[45%] text-right text-ink hover:text-brand">
+                <span className="block text-[0.65rem] uppercase tracking-[0.25em] text-ink-muted">{t('common.next')}</span>
+                <span className="mt-1 block truncate">{nextAlbum.title} →</span>
+              </Link>
+            ) : <span />}
+          </nav>
+        )}
       </section>
     </article>
   );

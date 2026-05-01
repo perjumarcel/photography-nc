@@ -1,13 +1,16 @@
-import type { LoadStatus, AlbumDto, AlbumDetailsDto } from '@/features/albums/model/types';
-import type { CategoryDto } from '@/features/categories/model/types';
+import type { AlbumDetailsDto, AlbumDto, CategoryDto, LoadStatus } from '@/shared/model/types';
 
 export interface CreateAlbumDto {
   title: string;
   categoryId: number;
+  slug?: string | null;
   description?: string | null;
   eventDate?: string | null;
   client?: string | null;
   location?: string | null;
+  seoTitle?: string | null;
+  seoDescription?: string | null;
+  coverAltText?: string | null;
   showInPortfolio?: boolean;
   showInStories?: boolean;
   showInHome?: boolean;
@@ -15,7 +18,7 @@ export interface CreateAlbumDto {
 
 export type UpdateAlbumDto = Required<Pick<CreateAlbumDto,
   'title' | 'categoryId' | 'showInPortfolio' | 'showInStories' | 'showInHome'>> &
-  Pick<CreateAlbumDto, 'description' | 'eventDate' | 'client' | 'location'>;
+  Pick<CreateAlbumDto, 'slug' | 'description' | 'eventDate' | 'client' | 'location' | 'seoTitle' | 'seoDescription' | 'coverAltText'>;
 
 export interface CreateCategoryDto {
   name: string;

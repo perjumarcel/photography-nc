@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Photography.Application.Albums.Queries;
 using Photography.Application.Categories.Queries;
+using System.Text;
 
 namespace Photography.Web.Controllers;
 
@@ -28,10 +29,37 @@ public sealed class PublicController : ControllerBase
         return result.ToActionResult(this);
     }
 
+    /// <summary>Get a single public album by readable slug, with GUID fallback kept above for migrated links.</summary>
+    [HttpGet("albums/{slug}")]
+    public async Task<IActionResult> GetAlbumBySlug(string slug, CancellationToken ct)
+    {
+        var result = await _mediator.Send(new GetAlbumBySlugOrIdQuery(slug), ct);
+        return result.ToActionResult(this);
+    }
+
     [HttpGet("categories")]
     public async Task<IActionResult> ListCategories(CancellationToken ct)
     {
         var result = await _mediator.Send(new ListCategoriesQuery(), ct);
         return result.ToActionResult(this);
+    }
+
+    [HttpGet("sitemap.xml")]
+    [Produces("application/xml")]
+    public async Task<IActionResult> Sitemap(CancellationToken ct)
+    {
+        var result = await _mediator.Send(new ListAlbumsQuery(PublicOnly: true), ct);
+        if (result.IsFailed) return result.ToActionResult(this);
+
+        var origin = $"{Request.Scheme}://{Request.Host}";
+        return Content(SeoDocuments.BuildSitemapXml(origin, result.Value ?? []), "application/xml", Encoding.UTF8);
+    }
+
+    [HttpGet("robots.txt")]
+    [Produces("text/plain")]
+    public IActionResult Robots()
+    {
+        var origin = $"{Request.Scheme}://{Request.Host}";
+        return Content(SeoDocuments.BuildRobotsTxt(origin), "text/plain", Encoding.UTF8);
     }
 }

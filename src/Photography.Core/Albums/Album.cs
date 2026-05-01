@@ -9,14 +9,22 @@ namespace Photography.Core.Albums;
 public class Album : AggregateRoot<Guid>
 {
     public const int MaxTitleLength = 64;
+    public const int MaxSlugLength = 96;
     public const int MaxClientLength = 128;
     public const int MaxLocationLength = 128;
+    public const int MaxSeoTitleLength = 128;
+    public const int MaxSeoDescriptionLength = 320;
+    public const int MaxCoverAltTextLength = 256;
 
     public string Title { get; private set; } = string.Empty;
+    public string Slug { get; private set; } = string.Empty;
     public string? Description { get; private set; }
     public DateTime? EventDate { get; private set; }
     public string? Client { get; private set; }
     public string? Location { get; private set; }
+    public string? SeoTitle { get; private set; }
+    public string? SeoDescription { get; private set; }
+    public string? CoverAltText { get; private set; }
 
     public bool ShowInPortfolio { get; private set; }
     public bool ShowInStories { get; private set; }
@@ -33,27 +41,38 @@ public class Album : AggregateRoot<Guid>
         Guid id,
         string title,
         int categoryId,
+        string? slug = null,
         string? description = null,
         DateTime? eventDate = null,
         string? client = null,
         string? location = null,
+        string? seoTitle = null,
+        string? seoDescription = null,
+        string? coverAltText = null,
         bool showInPortfolio = false,
         bool showInStories = false,
         bool showInHome = false)
     {
         ValidateTitle(title);
+        var normalizedSlug = NormalizeSlug(slug ?? title);
+        ValidateSlug(normalizedSlug);
         ValidateClient(client);
         ValidateLocation(location);
+        ValidateSeo(seoTitle, seoDescription, coverAltText);
 
         return new Album
         {
             Id = id == Guid.Empty ? Guid.NewGuid() : id,
             Title = title.Trim(),
+            Slug = normalizedSlug.Trim(),
             CategoryId = categoryId,
             Description = description,
             EventDate = eventDate,
             Client = client,
             Location = location,
+            SeoTitle = NormalizeOptional(seoTitle),
+            SeoDescription = NormalizeOptional(seoDescription),
+            CoverAltText = NormalizeOptional(coverAltText),
             ShowInPortfolio = showInPortfolio,
             ShowInStories = showInStories,
             ShowInHome = showInHome,
@@ -63,22 +82,33 @@ public class Album : AggregateRoot<Guid>
 
     public void UpdateDetails(
         string title,
+        string slug,
         int categoryId,
         string? description,
         DateTime? eventDate,
         string? client,
-        string? location)
+        string? location,
+        string? seoTitle,
+        string? seoDescription,
+        string? coverAltText)
     {
         ValidateTitle(title);
+        var normalizedSlug = NormalizeSlug(slug);
+        ValidateSlug(normalizedSlug);
         ValidateClient(client);
         ValidateLocation(location);
+        ValidateSeo(seoTitle, seoDescription, coverAltText);
 
         Title = title.Trim();
+        Slug = normalizedSlug;
         CategoryId = categoryId;
         Description = description;
         EventDate = eventDate;
         Client = client;
         Location = location;
+        SeoTitle = NormalizeOptional(seoTitle);
+        SeoDescription = NormalizeOptional(seoDescription);
+        CoverAltText = NormalizeOptional(coverAltText);
         Touch();
     }
 
@@ -149,6 +179,16 @@ public class Album : AggregateRoot<Guid>
             throw new ArgumentException($"Album title exceeds {MaxTitleLength} characters", nameof(title));
     }
 
+    private static void ValidateSlug(string slug)
+    {
+        if (string.IsNullOrWhiteSpace(slug))
+            throw new ArgumentException("Album slug is required", nameof(slug));
+        if (slug.Length > MaxSlugLength)
+            throw new ArgumentException($"Album slug exceeds {MaxSlugLength} characters", nameof(slug));
+        if (slug.Any(ch => !char.IsLetterOrDigit(ch) && ch != '-'))
+            throw new ArgumentException("Album slug may contain only letters, numbers, and hyphens", nameof(slug));
+    }
+
     private static void ValidateClient(string? client)
     {
         if (client is { Length: > MaxClientLength })
@@ -159,5 +199,29 @@ public class Album : AggregateRoot<Guid>
     {
         if (location is { Length: > MaxLocationLength })
             throw new ArgumentException($"Location exceeds {MaxLocationLength} characters", nameof(location));
+    }
+
+    private static void ValidateSeo(string? seoTitle, string? seoDescription, string? coverAltText)
+    {
+        if (seoTitle is { Length: > MaxSeoTitleLength })
+            throw new ArgumentException($"SEO title exceeds {MaxSeoTitleLength} characters", nameof(seoTitle));
+        if (seoDescription is { Length: > MaxSeoDescriptionLength })
+            throw new ArgumentException($"SEO description exceeds {MaxSeoDescriptionLength} characters", nameof(seoDescription));
+        if (coverAltText is { Length: > MaxCoverAltTextLength })
+            throw new ArgumentException($"Cover alt text exceeds {MaxCoverAltTextLength} characters", nameof(coverAltText));
+    }
+
+    private static string? NormalizeOptional(string? value) => string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+
+    private static string NormalizeSlug(string value)
+    {
+        var slug = new string(value.Trim().ToLowerInvariant()
+            .Select(ch => char.IsLetterOrDigit(ch) ? ch : '-')
+            .ToArray());
+        while (slug.Contains("--", StringComparison.Ordinal))
+            slug = slug.Replace("--", "-", StringComparison.Ordinal);
+        slug = slug.Trim('-');
+        if (string.IsNullOrWhiteSpace(slug)) slug = "album";
+        return slug.Length <= MaxSlugLength ? slug : slug[..MaxSlugLength].Trim('-');
     }
 }

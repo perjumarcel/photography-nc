@@ -3,6 +3,8 @@ using Photography.Application.Albums.Dtos;
 using Photography.Core.Albums;
 using Photography.Core.Categories;
 using Photography.SharedKernel;
+using System.Globalization;
+using System.Text;
 
 namespace Photography.Application.Albums.Commands;
 
@@ -27,14 +29,23 @@ public sealed class CreateAlbumHandler : IRequestHandler<CreateAlbumCommand, Res
 
         try
         {
+            var slug = await AlbumSlugGenerator.CreateUniqueAsync(
+                dto.Slug ?? dto.Title,
+                candidate => _albums.SlugExistsAsync(candidate, excludingAlbumId: null, ct),
+                ct);
+
             var album = Album.Create(
                 id: Guid.NewGuid(),
                 title: dto.Title,
                 categoryId: dto.CategoryId,
+                slug: slug,
                 description: dto.Description,
                 eventDate: dto.EventDate,
                 client: dto.Client,
                 location: dto.Location,
+                seoTitle: dto.SeoTitle,
+                seoDescription: dto.SeoDescription,
+                coverAltText: dto.CoverAltText,
                 showInPortfolio: dto.ShowInPortfolio,
                 showInStories: dto.ShowInStories,
                 showInHome: dto.ShowInHome);
@@ -73,13 +84,22 @@ public sealed class UpdateAlbumHandler : IRequestHandler<UpdateAlbumCommand, Res
 
         try
         {
+            var slug = await AlbumSlugGenerator.CreateUniqueAsync(
+                request.Dto.Slug ?? request.Dto.Title,
+                candidate => _albums.SlugExistsAsync(candidate, excludingAlbumId: album.Id, ct),
+                ct);
+
             album.UpdateDetails(
                 request.Dto.Title,
+                slug,
                 request.Dto.CategoryId,
                 request.Dto.Description,
                 request.Dto.EventDate,
                 request.Dto.Client,
-                request.Dto.Location);
+                request.Dto.Location,
+                request.Dto.SeoTitle,
+                request.Dto.SeoDescription,
+                request.Dto.CoverAltText);
             album.SetVisibility(request.Dto.ShowInPortfolio, request.Dto.ShowInStories, request.Dto.ShowInHome);
             await _albums.SaveChangesAsync(ct);
             return Result.Ok();
@@ -88,6 +108,59 @@ public sealed class UpdateAlbumHandler : IRequestHandler<UpdateAlbumCommand, Res
         {
             return Result.Fail(ex.Message);
         }
+    }
+}
+
+internal static class AlbumSlugGenerator
+{
+    private const int MaxAttempts = 100;
+
+    public static async Task<string> CreateUniqueAsync(
+        string source,
+        Func<string, Task<bool>> existsAsync,
+        CancellationToken ct)
+    {
+        var baseSlug = Normalize(source);
+        var candidate = baseSlug;
+        var suffix = 2;
+        for (var attempt = 1; attempt <= MaxAttempts && await existsAsync(candidate); attempt++)
+        {
+            var suffixText = $"-{suffix++}";
+            var maxBaseLength = Math.Max(1, Album.MaxSlugLength - suffixText.Length);
+            candidate = $"{baseSlug[..Math.Min(baseSlug.Length, maxBaseLength)].Trim('-')}{suffixText}";
+        }
+        if (await existsAsync(candidate))
+            throw new ArgumentException("Unable to generate a unique album slug", nameof(source));
+        return candidate;
+    }
+
+    public static string Normalize(string source)
+    {
+        var normalized = (string.IsNullOrWhiteSpace(source) ? "album" : source.Trim())
+            .Normalize(NormalizationForm.FormD);
+        var builder = new StringBuilder(normalized.Length);
+        var previousWasDash = false;
+
+        foreach (var ch in normalized)
+        {
+            var category = CharUnicodeInfo.GetUnicodeCategory(ch);
+            if (category == UnicodeCategory.NonSpacingMark) continue;
+
+            if (char.IsLetterOrDigit(ch))
+            {
+                builder.Append(char.ToLowerInvariant(ch));
+                previousWasDash = false;
+            }
+            else if (!previousWasDash)
+            {
+                builder.Append('-');
+                previousWasDash = true;
+            }
+        }
+
+        var slug = builder.ToString().Trim('-');
+        if (string.IsNullOrWhiteSpace(slug)) slug = "album";
+        return slug.Length <= Album.MaxSlugLength ? slug : slug[..Album.MaxSlugLength].Trim('-');
     }
 }
 
