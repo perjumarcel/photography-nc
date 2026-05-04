@@ -10,8 +10,6 @@ interface AlbumsListProps {
   error: string | null;
   /** Map of category id → display name, used to label cards. */
   categoryNames?: Record<number, string>;
-  /** Map of album id → cover URL, supplied by the container. */
-  coverUrls?: Record<string, string | undefined>;
   labels: { empty: string; loading: string; error: string };
 }
 
@@ -26,7 +24,6 @@ export function AlbumsList({
   status,
   error,
   categoryNames,
-  coverUrls,
   labels,
 }: AlbumsListProps): React.JSX.Element {
   if (status === 'loading' || status === 'idle') {
@@ -73,7 +70,6 @@ export function AlbumsList({
         <li key={album.id}>
           <AlbumCard
             album={album}
-            coverUrl={coverUrls?.[album.id]}
             categoryName={categoryNames?.[album.categoryId]}
           />
         </li>

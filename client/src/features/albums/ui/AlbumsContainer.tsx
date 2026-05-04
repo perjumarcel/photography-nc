@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import { fetchPublicAlbums } from '../api/thunks';
-import { fetchPublicCategories } from '@/features/categories/api/thunks';
+import { fetchPublicCategories } from '@/shared/api/categories';
 import { AlbumsList } from './AlbumsList';
 import { CategoryFilters, type CategoryFilterOption } from './CategoryFilters';
 

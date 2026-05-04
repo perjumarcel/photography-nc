@@ -22,6 +22,9 @@ public sealed class AlbumQueryRepository : IAlbumQueryRepository
     public Task<Album?> GetByIdAsync(Guid id, CancellationToken ct = default) =>
         _db.Albums.AsNoTracking().Include(a => a.Images).FirstOrDefaultAsync(a => a.Id == id, ct);
 
+    public Task<Album?> GetBySlugAsync(string slug, CancellationToken ct = default) =>
+        _db.Albums.AsNoTracking().Include(a => a.Images).FirstOrDefaultAsync(a => a.Slug == slug, ct);
+
     public Task<int> CountAsync(CancellationToken ct = default) => _db.Albums.CountAsync(ct);
 
     public Task<bool> AnyInCategoryAsync(int categoryId, CancellationToken ct = default) =>
@@ -43,6 +46,9 @@ public sealed class AlbumCommandRepository : IAlbumCommandRepository
 
     public Task<bool> ExistsAsync(Guid id, CancellationToken ct = default) =>
         _db.Albums.AnyAsync(a => a.Id == id, ct);
+
+    public Task<bool> SlugExistsAsync(string slug, Guid? excludingAlbumId = null, CancellationToken ct = default) =>
+        _db.Albums.AnyAsync(a => a.Slug == slug && (!excludingAlbumId.HasValue || a.Id != excludingAlbumId.Value), ct);
 
     public Task SaveChangesAsync(CancellationToken ct = default) => _db.SaveChangesAsync(ct);
 }

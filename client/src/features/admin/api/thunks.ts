@@ -1,8 +1,8 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { api } from '@/shared/api/client';
 import { extractErrorMessage } from '@/shared/lib/extractErrorMessage';
-import type { AlbumDetailsDto, AlbumDto, ImageDto } from '@/features/albums/model/types';
-import type { CategoryDto } from '@/features/categories/model/types';
+import type { AlbumDetailsDto, AlbumDto, ImageDto } from '@/shared/model/types';
+import type { CategoryDto } from '@/shared/model/types';
 import type { CreateAlbumDto, CreateCategoryDto, UpdateAlbumDto, UpdateCategoryDto } from '../model/types';
 
 // ─── Albums ───────────────────────────────────────────────────────────────

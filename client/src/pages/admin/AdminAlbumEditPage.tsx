@@ -6,9 +6,11 @@ import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import { Button } from '@/shared/ui/Button';
 import {
   deleteAlbumImage, fetchAdminAlbum, fetchAdminCategories, setAlbumCover,
-  updateAdminAlbum, uploadAlbumImage,
+  updateAdminAlbum,
 } from '@/features/admin/api/thunks';
 import { clearCurrent } from '@/features/admin/model/adminSlice';
+import { useAlbumImageUploadQueue } from '@/features/admin/lib/useAlbumImageUploadQueue';
+import { AdminAlbumImages } from '@/features/admin/ui/AdminAlbumImages';
 
 /**
  * Edit a single album: title/category/visibility flags, plus image upload,
@@ -34,8 +36,10 @@ export function AdminAlbumEditPage(): React.JSX.Element {
   const [form, setForm] = useState({
     title: '', categoryId: 0, description: '',
     eventDate: '', client: '', location: '',
+    slug: '', seoTitle: '', seoDescription: '', coverAltText: '',
     showInPortfolio: false, showInStories: false, showInHome: false,
   });
+  const { uploadQueue, uploadFiles } = useAlbumImageUploadQueue(id ?? '');
 
   useEffect(() => {
     if (!id) return;
@@ -50,10 +54,14 @@ export function AdminAlbumEditPage(): React.JSX.Element {
       setForm({
         title: album.title,
         categoryId: album.categoryId,
+        slug: album.slug,
         description: album.description ?? '',
         eventDate: album.eventDate ? album.eventDate.slice(0, 10) : '',
         client: album.client ?? '',
         location: album.location ?? '',
+        seoTitle: album.seoTitle ?? '',
+        seoDescription: album.seoDescription ?? '',
+        coverAltText: album.coverAltText ?? '',
         showInPortfolio: album.showInPortfolio,
         showInStories: album.showInStories,
         showInHome: album.showInHome,
@@ -67,14 +75,18 @@ export function AdminAlbumEditPage(): React.JSX.Element {
     e.preventDefault();
     await dispatch(updateAdminAlbum({
       id,
-      dto: {
-        title: form.title.trim(),
-        categoryId: form.categoryId,
-        description: form.description || null,
-        eventDate: form.eventDate ? new Date(form.eventDate).toISOString() : null,
-        client: form.client || null,
-        location: form.location || null,
-        showInPortfolio: form.showInPortfolio,
+        dto: {
+          title: form.title.trim(),
+          categoryId: form.categoryId,
+          slug: form.slug || null,
+          description: form.description || null,
+          eventDate: form.eventDate ? new Date(form.eventDate).toISOString() : null,
+          client: form.client || null,
+          location: form.location || null,
+          seoTitle: form.seoTitle || null,
+          seoDescription: form.seoDescription || null,
+          coverAltText: form.coverAltText || null,
+          showInPortfolio: form.showInPortfolio,
         showInStories: form.showInStories,
         showInHome: form.showInHome,
       },
@@ -82,9 +94,8 @@ export function AdminAlbumEditPage(): React.JSX.Element {
   };
 
   const onPickFile = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    void dispatch(uploadAlbumImage({ albumId: id, file })).then(() => {
+    const files = Array.from(e.target.files ?? []);
+    void uploadFiles(files).then(() => {
       if (fileInput.current) fileInput.current.value = '';
     });
   };
@@ -120,6 +131,14 @@ export function AdminAlbumEditPage(): React.JSX.Element {
               {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
             </select>
           </Field>
+          <Field label={t('admin.slug')}>
+            <input
+              type="text" value={form.slug}
+              onChange={(e) => setForm({ ...form, slug: e.target.value })}
+              className={inputCls}
+              placeholder="album-slug"
+            />
+          </Field>
           <Field label={t('admin.eventDate')}>
             <input
               type="date" value={form.eventDate}
@@ -148,6 +167,27 @@ export function AdminAlbumEditPage(): React.JSX.Element {
               className={inputCls}
             />
           </Field>
+          <Field label={t('admin.seoTitle')} className="sm:col-span-2">
+            <input
+              type="text" value={form.seoTitle}
+              onChange={(e) => setForm({ ...form, seoTitle: e.target.value })}
+              className={inputCls}
+            />
+          </Field>
+          <Field label={t('admin.seoDescription')} className="sm:col-span-2">
+            <textarea
+              rows={3} value={form.seoDescription}
+              onChange={(e) => setForm({ ...form, seoDescription: e.target.value })}
+              className={inputCls}
+            />
+          </Field>
+          <Field label={t('admin.coverAltText')} className="sm:col-span-2">
+            <input
+              type="text" value={form.coverAltText}
+              onChange={(e) => setForm({ ...form, coverAltText: e.target.value })}
+              className={inputCls}
+            />
+          </Field>
 
           <div className="flex flex-col gap-2 sm:col-span-2">
             <Checkbox label={t('admin.showInPortfolio')} checked={form.showInPortfolio}
@@ -165,73 +205,20 @@ export function AdminAlbumEditPage(): React.JSX.Element {
       )}
 
       {album && (
-        <section className="mt-8">
-          <header className="flex items-center justify-between">
-            <h2 className="font-display text-xl text-ink">{t('admin.images')}</h2>
-            <label className="cursor-pointer rounded-lg border border-ink px-4 py-2 text-xs uppercase tracking-[0.2em] text-ink hover:bg-ink hover:text-paper">
-              {t('admin.upload')}
-              <input
-                ref={fileInput}
-                type="file"
-                accept="image/*"
-                className="sr-only"
-                onChange={onPickFile}
-              />
-            </label>
-          </header>
-
-          {mutationStatus === 'loading' && (
-            <p className="mt-3 text-xs text-ink/60">{t('admin.uploading')}</p>
-          )}
-
-          {album.images.length === 0 ? (
-            <p className="mt-6 rounded-xl border border-dashed border-zinc-300 bg-paper p-10 text-center text-ink/60">
-              {t('admin.noImages')}
-            </p>
-          ) : (
-            <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {album.images.map((img) => {
-                const isCover = album.coverImageId === img.id;
-                return (
-                  <li key={img.id} className="overflow-hidden rounded-xl border border-zinc-200 bg-paper">
-                    <img
-                      src={img.publicUrl}
-                      alt={img.originalName}
-                      width={img.width}
-                      height={img.height}
-                      loading="lazy"
-                      className="aspect-[4/3] w-full object-cover"
-                    />
-                    <div className="flex items-center justify-between gap-2 p-3 text-xs">
-                      <span className="truncate text-ink/70" title={img.originalName}>{img.originalName}</span>
-                      <div className="flex gap-2 whitespace-nowrap">
-                        <button
-                          type="button"
-                          onClick={() => dispatch(setAlbumCover({ albumId: id, imageId: img.id }))}
-                          disabled={isCover}
-                          className="uppercase tracking-[0.18em] text-ink/70 hover:text-ink disabled:text-brand disabled:cursor-default"
-                        >
-                          {isCover ? '★' : t('admin.cover')}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            if (window.confirm(t('admin.confirmDelete'))) {
-                              dispatch(deleteAlbumImage({ albumId: id, imageId: img.id }));
-                            }
-                          }}
-                          className="uppercase tracking-[0.18em] text-red-600 hover:text-red-700"
-                        >
-                          {t('admin.delete')}
-                        </button>
-                      </div>
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
-          )}
-        </section>
+        <AdminAlbumImages
+          images={album.images}
+          coverImageId={album.coverImageId}
+          mutationStatus={mutationStatus}
+          uploadQueue={uploadQueue}
+          fileInput={fileInput}
+          onPickFile={onPickFile}
+          onSetCover={(imageId) => dispatch(setAlbumCover({ albumId: id, imageId }))}
+          onDelete={(imageId) => {
+            if (window.confirm(t('admin.confirmDelete'))) {
+              dispatch(deleteAlbumImage({ albumId: id, imageId }));
+            }
+          }}
+        />
       )}
     </div>
   );

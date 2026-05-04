@@ -9,6 +9,8 @@ obj/
 node_modules/
 dist/
 client/.vite/
+client/cypress/screenshots/
+client/cypress/videos/
 
 # Local storage / migration artifacts
 src/Photography.Web/_storage/

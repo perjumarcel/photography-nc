@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
+import { Seo } from '@/shared/ui/Seo';
 
 /**
  * About page. Mirrors `About/Index.cshtml` — a full-bleed image and a text
@@ -9,6 +10,7 @@ export function AboutPage(): React.JSX.Element {
   const { t } = useTranslation();
   return (
     <section className="bg-ink-soft text-paper">
+      <Seo title={`${t('about.title')} — ${t('app.title')}`} description={t('about.subtitle')} canonicalPath="/about" />
       <div className="mx-auto grid w-full max-w-6xl gap-10 px-6 py-12 sm:py-16 md:grid-cols-2 md:items-center md:gap-16 md:py-24">
         <figure className="relative aspect-[4/5] w-full overflow-hidden bg-shell md:aspect-[3/4]">
           {/* The legacy image lived at /images/about-me.jpg. Once the asset is

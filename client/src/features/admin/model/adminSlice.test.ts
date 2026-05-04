@@ -4,20 +4,43 @@ import {
   createAdminAlbum, deleteAdminAlbum, fetchAdminAlbums, fetchAdminCategories,
   setAlbumCover, deleteAlbumImage,
 } from '../api/thunks';
-import type { AlbumDto, ImageDto, AlbumDetailsDto } from '@/features/albums/model/types';
-import type { CategoryDto } from '@/features/categories/model/types';
+import type { AlbumDto, ImageDto, AlbumDetailsDto } from '@/shared/model/types';
+import type { CategoryDto } from '@/shared/model/types';
 
 const album: AlbumDto = {
   id: 'a1', title: 'Album 1', showInPortfolio: true, showInStories: false, showInHome: false,
-  categoryId: 1, imageCount: 0,
+  slug: 'album-1', seoTitle: 'Album SEO', seoDescription: 'Album SEO description', coverAltText: 'Album cover',
+  categoryId: 1, imageCount: 0, coverPublicUrl: '/cover.jpg', coverWidth: 100, coverHeight: 50,
+  coverVariants: {
+    placeholder: '/cover.jpg?width=40',
+    thumbnail: '/cover.jpg?width=240',
+    card: '/cover.jpg?width=640',
+    hero: '/cover.jpg?width=1600',
+    full: '/cover.jpg',
+  },
 };
 const album2: AlbumDto = { ...album, id: 'a2', title: 'Album 2' };
 const category: CategoryDto = { id: 1, name: 'Wedding', slug: 'wedding', displayOrder: 10, showAsFilter: true };
 const image: ImageDto = {
   id: 'img1', albumId: 'a1', originalName: 'p.jpg', storageKey: 'k', publicUrl: '/k',
+  variants: {
+    placeholder: '/k?width=40',
+    thumbnail: '/k?width=240',
+    card: '/k?width=640',
+    hero: '/k?width=1600',
+    full: '/k',
+  },
   width: 100, height: 50, orientation: 0, imageType: 0, sizeBytes: 1234,
 };
-const albumDetails: AlbumDetailsDto = { ...album, images: [image] };
+const albumDetails: AlbumDetailsDto = {
+  ...album,
+  coverImageId: image.id,
+  coverPublicUrl: album.coverPublicUrl,
+  coverWidth: album.coverWidth,
+  coverHeight: album.coverHeight,
+  coverVariants: album.coverVariants,
+  images: [image],
+};
 
 describe('adminSlice', () => {
   it('starts idle', () => {

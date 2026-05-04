@@ -1,7 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { fetchPublicCategories } from '../api/thunks';
-import type { CategoryDto } from './types';
-import type { LoadStatus } from '@/features/albums/model/types';
+import type { CategoryDto, LoadStatus } from '@/shared/model/types';
 
 interface CategoriesState {
   list: CategoryDto[];

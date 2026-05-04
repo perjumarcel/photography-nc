@@ -4,6 +4,8 @@ using Microsoft.Extensions.Options;
 using Photography.Application.Common.Email;
 using Photography.Application.Contact.Dtos;
 using Photography.SharedKernel;
+using System.Net.Mail;
+using System.Text.RegularExpressions;
 
 namespace Photography.Application.Contact.Commands;
 
@@ -40,27 +42,46 @@ public sealed class SendContactMessageHandler(
 {
     private const int MaxNameLength = 128;
     private const int MaxEmailLength = 256;
+    private const int MaxPhoneLength = 64;
+    private const int MaxMetadataLength = 256;
     private const int MaxMessageLength = 4000;
+    private static readonly Regex ConservativeEmailPattern = new(
+        @"^[^@\s<>()""\\,;:]+@[^@\s<>()""\\,;:]+\.[^@\s<>()""\\,;:]+$",
+        RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
     private readonly ContactOptions _contact = contactOptions.Value;
 
     public async Task<Result> Handle(SendContactMessageCommand request, CancellationToken ct)
     {
         var dto = request.Dto;
-        if (string.IsNullOrWhiteSpace(dto.Name) || dto.Name.Length > MaxNameLength)
-            return Result.Fail("Invalid name");
-        if (string.IsNullOrWhiteSpace(dto.Email) || dto.Email.Length > MaxEmailLength || !dto.Email.Contains('@'))
-            return Result.Fail("Invalid email");
-        if (string.IsNullOrWhiteSpace(dto.Message) || dto.Message.Length > MaxMessageLength)
+        if (!string.IsNullOrWhiteSpace(dto.Website))
             return Result.Fail("Invalid message");
 
-        var name = dto.Name.Trim();
-        var email = dto.Email.Trim();
-        var message = dto.Message.Trim();
+        var name = dto.Name?.Trim();
+        var email = dto.Email?.Trim();
+        var phone = Normalize(dto.Phone);
+        var eventType = Normalize(dto.EventType);
+        var preferredDate = Normalize(dto.PreferredDate);
+        var venue = Normalize(dto.Venue);
+        var budget = Normalize(dto.EstimatedBudgetRange);
+        var sourcePage = Normalize(dto.SourcePage);
+        var message = dto.Message?.Trim();
+
+        if (string.IsNullOrWhiteSpace(name) || name.Length > MaxNameLength)
+            return Result.Fail("Invalid name");
+        if (string.IsNullOrWhiteSpace(email) || email.Length > MaxEmailLength || !IsValidEmail(email))
+            return Result.Fail("Invalid email");
+        if (phone is { Length: > MaxPhoneLength })
+            return Result.Fail("Invalid phone");
+        if (!IsValidMetadata(eventType) || !IsValidMetadata(preferredDate) || !IsValidMetadata(venue) ||
+            !IsValidMetadata(budget) || !IsValidMetadata(sourcePage))
+            return Result.Fail("Invalid message details");
+        if (string.IsNullOrWhiteSpace(message) || message.Length > MaxMessageLength)
+            return Result.Fail("Invalid message");
 
         logger.LogInformation(
-            "Contact message received from {ContactName} <{ContactEmail}>: {ContactMessage}",
-            name, email, message);
+            "Contact message received from {ContactName} <{ContactEmail}>. Phone: {ContactPhone}. Event: {EventType}. PreferredDate: {PreferredDate}. Venue: {Venue}. Budget: {Budget}. Source: {SourcePage}. Message: {ContactMessage}",
+            name, email, phone, eventType, preferredDate, venue, budget, sourcePage, message);
 
         var recipient = _contact.NotificationRecipient;
         if (!string.IsNullOrWhiteSpace(recipient))
@@ -68,6 +89,12 @@ public sealed class SendContactMessageHandler(
             var subject = $"Contact form: {name}";
             var body =
                 $"From: {name} <{email}>{Environment.NewLine}" +
+                FormatLine("Phone", phone) +
+                FormatLine("Event/session type", eventType) +
+                FormatLine("Preferred date", preferredDate) +
+                FormatLine("Venue/location", venue) +
+                FormatLine("Estimated budget", budget) +
+                FormatLine("Source page", sourcePage) +
                 $"{Environment.NewLine}" +
                 message;
 
@@ -86,4 +113,29 @@ public sealed class SendContactMessageHandler(
 
         return Result.Ok();
     }
+
+    private static bool IsValidEmail(string email)
+    {
+        if (!ConservativeEmailPattern.IsMatch(email))
+            return false;
+
+        try
+        {
+            var parsed = new MailAddress(email);
+            return string.Equals(parsed.Address, email, StringComparison.OrdinalIgnoreCase);
+        }
+        catch (FormatException)
+        {
+            return false;
+        }
+    }
+
+    private static string? Normalize(string? value)
+        => string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+
+    private static bool IsValidMetadata(string? value)
+        => value is null || value.Length <= MaxMetadataLength;
+
+    private static string FormatLine(string label, string? value)
+        => string.IsNullOrWhiteSpace(value) ? string.Empty : $"{label}: {value}{Environment.NewLine}";
 }

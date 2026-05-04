@@ -6,7 +6,7 @@ import { Button } from '@/shared/ui/Button';
 import {
   createAdminCategory, deleteAdminCategory, fetchAdminCategories, updateAdminCategory,
 } from '@/features/admin/api/thunks';
-import type { CategoryDto } from '@/features/categories/model/types';
+import type { CategoryDto } from '@/shared/model/types';
 
 /**
  * Categories admin. Inline create form on top, editable rows below. Each row
