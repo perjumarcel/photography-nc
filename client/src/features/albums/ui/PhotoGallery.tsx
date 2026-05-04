@@ -64,7 +64,7 @@ export function PhotoGallery({ images, albumTitle }: PhotoGalleryProps): React.J
         >
           <button
             type="button"
-            aria-label="Close gallery"
+            aria-label={t('common.close')}
             className="absolute right-4 top-4 rounded-lg px-3 py-2 text-sm uppercase tracking-[0.2em] focus:outline-none focus:ring-2 focus:ring-brand"
             onClick={() => setActiveIndex(null)}
           >
@@ -72,7 +72,7 @@ export function PhotoGallery({ images, albumTitle }: PhotoGalleryProps): React.J
           </button>
           <button
             type="button"
-            aria-label="Previous image"
+            aria-label={t('common.previous')}
             disabled={activeIndex === 0}
             className="absolute left-4 rounded-lg px-3 py-2 text-3xl disabled:opacity-30 focus:outline-none focus:ring-2 focus:ring-brand"
             onClick={(event) => {
@@ -92,7 +92,7 @@ export function PhotoGallery({ images, albumTitle }: PhotoGalleryProps): React.J
           />
           <button
             type="button"
-            aria-label="Next image"
+            aria-label={t('common.next')}
             disabled={activeIndex === images.length - 1}
             className="absolute right-4 rounded-lg px-3 py-2 text-3xl disabled:opacity-30 focus:outline-none focus:ring-2 focus:ring-brand"
             onClick={(event) => {

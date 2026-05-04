@@ -44,7 +44,7 @@ export function ContactForm({
 
   return (
     <form onSubmit={onSubmit} className="space-y-4 md:col-span-2" noValidate>
-      <div className="absolute -left-[9999px] h-px w-px overflow-hidden">
+      <div className="absolute -left-[9999px] h-px w-px overflow-hidden" aria-hidden="true">
         <label htmlFor="contact-website">{t('contact.formWebsite')}</label>
         <input
           id="contact-website"

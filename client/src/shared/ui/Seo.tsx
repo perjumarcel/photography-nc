@@ -15,10 +15,10 @@ export function Seo({ title, description, image, canonicalPath }: SeoProps): nul
     upsertProperty('og:type', 'website');
     upsertProperty('og:description', description);
     upsertProperty('og:image', image ?? undefined);
-    upsertProperty('twitter:card', image ? 'summary_large_image' : 'summary');
-    upsertProperty('twitter:title', title);
-    upsertProperty('twitter:description', description);
-    upsertProperty('twitter:image', image ?? undefined);
+    upsertMeta('twitter:card', image ? 'summary_large_image' : 'summary');
+    upsertMeta('twitter:title', title);
+    upsertMeta('twitter:description', description);
+    upsertMeta('twitter:image', image ?? undefined);
     upsertCanonical(canonicalPath);
   }, [canonicalPath, description, image, title]);
 

@@ -187,6 +187,8 @@ public class Album : AggregateRoot<Guid>
             throw new ArgumentException($"Album slug exceeds {MaxSlugLength} characters", nameof(slug));
         if (slug.Any(ch => !char.IsLetterOrDigit(ch) && ch != '-'))
             throw new ArgumentException("Album slug may contain only letters, numbers, and hyphens", nameof(slug));
+        if (Guid.TryParse(slug, out _))
+            throw new ArgumentException("Album slug cannot be a GUID", nameof(slug));
     }
 
     private static void ValidateClient(string? client)

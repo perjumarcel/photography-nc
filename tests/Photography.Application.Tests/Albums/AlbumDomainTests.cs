@@ -45,6 +45,13 @@ public class AlbumDomainTests
     }
 
     [Fact]
+    public void Create_WithGuidSlug_Throws()
+    {
+        Assert.Throws<ArgumentException>(() =>
+            Album.Create(Guid.NewGuid(), "Beach Wedding", 1, slug: Guid.NewGuid().ToString()));
+    }
+
+    [Fact]
     public void AddImage_DerivesOrientationFromDimensions()
     {
         var album = Album.Create(Guid.NewGuid(), "T", 1);
